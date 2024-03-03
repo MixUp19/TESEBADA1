@@ -40,7 +40,7 @@ public class Menu extends JFrame {
     }
     public void anadirPanel(PanConfig panel){
         add(panel,BorderLayout.CENTER);
-        revalidate(); // Revalidar el contenido para que se actualice
+        revalidate();
         repaint();
     }
 
