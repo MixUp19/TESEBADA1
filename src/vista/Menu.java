@@ -1,15 +1,16 @@
 package src.vista;
 
+import src.controlador.Controlador;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class Menu extends JFrame {
     private JMenuBar menu;
-    private JPanel panel;
-    private JMenu conf;
-    private JMenu tran;
-    private JMenu con;
-    private JMenu sal;
+    private JMenuItem conf;
+    private JMenuItem tran;
+    private JMenuItem con;
+    private JMenuItem sal;
     public Menu() {
 
         menu= new JMenuBar();
@@ -20,33 +21,42 @@ public class Menu extends JFrame {
         setVisible(true);
     }
     private void crearMenu(){
-        conf= new JMenu("Configuración.");
-        tran = new JMenu("Transacción");
-        con = new JMenu("Consulta");
-        sal = new JMenu("Salir");
+        conf= new JMenuItem ("Configuración.");
+        tran = new JMenuItem("Transacción");
+        con = new JMenuItem("Consulta");
+        sal = new JMenuItem("Salir");
         menu.add(conf);
         menu.add(tran);
         menu.add(con);
         menu.add(sal);
         add(menu, BorderLayout.NORTH);
     }
-    public void anadirPanel(JPanel panel){
+    public void hazEscuchas(Controlador c){
+        System.out.println("Entra");
+        conf.addActionListener(c);
+        tran.addActionListener(c);
+        con.addActionListener(c);
+        sal.addActionListener(c);
+    }
+    public void anadirPanel(PanConfig panel){
         add(panel,BorderLayout.CENTER);
+        revalidate(); // Revalidar el contenido para que se actualice
+        repaint();
     }
 
-    public JMenu getConf() {
+    public JMenuItem getConf() {
         return conf;
     }
 
-    public JMenu getTran() {
+    public JMenuItem getTran() {
         return tran;
     }
 
-    public JMenu getCon() {
+    public JMenuItem getCon() {
         return con;
     }
 
-    public JMenu getSal() {
+    public JMenuItem getSal() {
         return sal;
     }
 }

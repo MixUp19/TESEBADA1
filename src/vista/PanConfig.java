@@ -17,32 +17,33 @@ public class PanConfig extends JPanel implements ComponentListener {
             {"","","",""},
             {"","","",""}
     };
+
     public PanConfig(){
-        modelo = new DefaultTableModel(data, columnNames) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return true;
-            }
-        };
+        addComponentListener(this);
+        modelo = new DefaultTableModel(data, columnNames) ;
         setLayout(null);
         tableConfig = new JTable(modelo);
-        lblNombreTabla= new JLabel("Nombre de la tabla distribuida");
+        lblNombreTabla= new JLabel("Nombre de la tabla distribuida:");
         txtNombreTabla = new JTextField();
-    }
-    public void hazInterfaz(){
-        int h = getHeight(), w =getWidth();
-        if(h==0 || w==0)
-            return;
-        lblNombreTabla.setBounds((int)(w*0.05), (int)(h*0.03),(int)(w*0.2), (int)(h*0.07));
-        txtNombreTabla.setBounds((int)(w*0.25), (int)(h*0.03),(int)(w*0.2), (int)(h*0.07));
-        tableConfig.setBounds((int)(w*0.05), (int)(h*0.03),(int)(w*0.4), (int)(h*0.5));
+        hazInterfaz();
     }
 
+    public void hazInterfaz() {
+        int h = getHeight(), w = getWidth();
+        JScrollPane tablapane = new JScrollPane(tableConfig);
+        lblNombreTabla.setBounds((int)(w*0.2), (int)(h*0.03), (int)(w*0.2), (int)(h*0.04));
+        txtNombreTabla.setBounds((int)(w*0.45), (int)(h*0.03), (int)(w*0.2), (int)(h*0.07));
+        tablapane.setBounds((int)(w*0.05), (int)(h*0.15), (int)(w*0.8), (int)(h*0.5));
+
+        add(lblNombreTabla);
+        add(txtNombreTabla);
+        add(tablapane);
+        System.out.println(h + ", " + w);
+    }
     @Override
     public void componentResized(ComponentEvent e) {
-
+        hazInterfaz();
     }
-
     @Override
     public void componentMoved(ComponentEvent e) {
 
