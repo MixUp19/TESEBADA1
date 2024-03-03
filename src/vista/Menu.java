@@ -21,14 +21,16 @@ public class Menu extends JFrame {
         setVisible(true);
     }
     private void crearMenu(){
+        JMenu opciones = new JMenu("Opciones");
         conf= new JMenuItem ("Configuración.");
         tran = new JMenuItem("Transacción");
         con = new JMenuItem("Consulta");
         sal = new JMenuItem("Salir");
-        menu.add(conf);
-        menu.add(tran);
-        menu.add(con);
-        menu.add(sal);
+        opciones.add(conf);
+        opciones.add(tran);
+        opciones.add(con);
+        opciones.add(sal);
+        menu.add(opciones);
         add(menu, BorderLayout.NORTH);
     }
     public void hazEscuchas(Controlador c){

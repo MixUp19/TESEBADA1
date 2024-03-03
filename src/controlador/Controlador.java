@@ -21,5 +21,8 @@ public class Controlador implements ActionListener {
             menuPantalla.anadirPanel(new PanTran());
             return;
         }
+        if (e.getSource()== menuPantalla.getCon()){
+            menuPantalla.anadirPanel(new PanCon());
+        }
     }
 }
