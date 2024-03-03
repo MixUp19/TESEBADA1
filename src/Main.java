@@ -9,6 +9,6 @@ public class Main{
         Menu m = new Menu();
         Controlador c = new Controlador(m);
         m.hazEscuchas(c);
-        PanConfig p=new PanConfig();
+        PanConfig p = new PanConfig();
     }
 }
