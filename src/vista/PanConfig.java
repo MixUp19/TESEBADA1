@@ -38,7 +38,6 @@ public class PanConfig extends JPanel implements ComponentListener {
         add(lblNombreTabla);
         add(txtNombreTabla);
         add(tablapane);
-        System.out.println(h + ", " + w);
     }
     @Override
     public void componentResized(ComponentEvent e) {

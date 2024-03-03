@@ -38,9 +38,11 @@ public class Menu extends JFrame {
         con.addActionListener(c);
         sal.addActionListener(c);
     }
-    public void anadirPanel(PanConfig panel){
+    public void anadirPanel(JPanel panel){
+        getContentPane().removeAll();
+        add(menu,BorderLayout.NORTH);
         add(panel,BorderLayout.CENTER);
-        revalidate(); // Revalidar el contenido para que se actualice
+        revalidate();
         repaint();
     }
 

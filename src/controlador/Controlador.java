@@ -13,10 +13,13 @@ public class Controlador implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("Entra action");
         if(e.getSource() ==menuPantalla.getConf()){
-            System.out.println("Entra boton");
             menuPantalla.anadirPanel(new PanConfig());
+            return;
+        }
+        if(e.getSource() == menuPantalla.getTran()){
+            menuPantalla.anadirPanel(new PanTran());
+            return;
         }
     }
 }
