@@ -11,6 +11,7 @@ public class Menu extends JFrame {
     private JMenuItem tran;
     private JMenuItem con;
     private JMenuItem sal;
+    private JMenuItem mapAtr;
     private JMenuItem conf_tabla_dist;
     public Menu() {
 
@@ -28,8 +29,10 @@ public class Menu extends JFrame {
         tran = new JMenuItem("Transacción");
         con = new JMenuItem("Consulta");
         sal = new JMenuItem("Salir");
+        mapAtr= new JMenuItem("Mapeo de Atributos");
         opciones.add(conf_tabla_dist);
         opciones.add(conf);
+        opciones.add(mapAtr);
         opciones.add(tran);
         opciones.add(con);
         opciones.add(sal);
@@ -39,6 +42,7 @@ public class Menu extends JFrame {
     public void hazEscuchas(Controlador c){
         System.out.println("Entra");
         conf_tabla_dist.addActionListener(c);
+        mapAtr.addActionListener(c);
         conf.addActionListener(c);
         tran.addActionListener(c);
         con.addActionListener(c);
@@ -70,5 +74,8 @@ public class Menu extends JFrame {
 
     public JMenuItem getConf_tabla_dist() {
         return conf_tabla_dist;
+    }
+    public JMenuItem getMapAtr(){
+        return mapAtr;
     }
 }
