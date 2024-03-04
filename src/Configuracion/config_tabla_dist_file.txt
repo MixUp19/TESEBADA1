@@ -1,0 +1,2 @@
+NOMBRE DE TABLA-ATRIBUTOS
+Clientes-id,nombre,edad,calle
