@@ -11,6 +11,7 @@ public class Menu extends JFrame {
     private JMenuItem tran;
     private JMenuItem con;
     private JMenuItem sal;
+    private JMenuItem conf_tabla_dist;
     public Menu() {
 
         menu= new JMenuBar();
@@ -22,10 +23,12 @@ public class Menu extends JFrame {
     }
     private void crearMenu(){
         JMenu opciones = new JMenu("Opciones");
-        conf= new JMenuItem ("Configuración.");
+        conf_tabla_dist = new JMenuItem("Configuracion De Tabla Distribuida");
+        conf= new JMenuItem ("Configuración De Fragmentos");
         tran = new JMenuItem("Transacción");
         con = new JMenuItem("Consulta");
         sal = new JMenuItem("Salir");
+        opciones.add(conf_tabla_dist);
         opciones.add(conf);
         opciones.add(tran);
         opciones.add(con);
@@ -35,6 +38,7 @@ public class Menu extends JFrame {
     }
     public void hazEscuchas(Controlador c){
         System.out.println("Entra");
+        conf_tabla_dist.addActionListener(c);
         conf.addActionListener(c);
         tran.addActionListener(c);
         con.addActionListener(c);
@@ -62,5 +66,9 @@ public class Menu extends JFrame {
 
     public JMenuItem getSal() {
         return sal;
+    }
+
+    public JMenuItem getConf_tabla_dist() {
+        return conf_tabla_dist;
     }
 }

@@ -13,6 +13,10 @@ public class Controlador implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == menuPantalla.getConf_tabla_dist()) {
+            menuPantalla.anadirPanel(new PanConfigTablaDist());
+            return;
+        }
         if(e.getSource() ==menuPantalla.getConf()){
             menuPantalla.anadirPanel(new PanConfig());
             return;
