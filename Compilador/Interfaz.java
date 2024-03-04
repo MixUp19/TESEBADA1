@@ -12,7 +12,6 @@ public class Interfaz extends JFrame implements ActionListener, KeyListener {
 	
 	private JButton btnArchivos, btnAnalisisLexico, btnAnalisisSintactico;
 	private JPanel panelIzquierdo, panelDerecho, panelBotones, panelCodigoErrores;
-	private JTable tablaSimbolos;
 	private JLabel lblTablaSimbolos, lblCodigoFuente;
 	private JTextArea txtCodigoFuente, txtAreaErrores, txtTokenizer;
 	private File archivoElegido;
@@ -49,13 +48,8 @@ public class Interfaz extends JFrame implements ActionListener, KeyListener {
 		lblTablaSimbolos = new JLabel("Tabla de Simbolos y tokenizer");
 		lblTablaSimbolos.setBorder(new EmptyBorder(10,10,10,0));
 
-		tablaSimbolos = new JTable(100,2); //tabla de ids
-		//tablaSimbolos.setShowGrid(false);
-		tablaSimbolos.setEnabled(false);
-		tablaSimbolos.getColumnModel().getColumn(0).setHeaderValue("Identificador");
-		tablaSimbolos.getColumnModel().getColumn(1).setHeaderValue("Valor");
+	
 
-		JScrollPane scrollTabla = new JScrollPane(tablaSimbolos);
 	
 		JPanel panelaux = new JPanel(new GridLayout(0, 1));
 		
@@ -63,7 +57,6 @@ public class Interfaz extends JFrame implements ActionListener, KeyListener {
 		txtTokenizer.setEditable(false);
 		JScrollPane scrollTokenizer = new JScrollPane(txtTokenizer);
 
-		panelaux.add(scrollTabla);
 		panelaux.add(scrollTokenizer);
 
 		btnArchivos = new JButton("Abrir archivo");
@@ -151,10 +144,7 @@ public class Interfaz extends JFrame implements ActionListener, KeyListener {
 			
 			this.cuentaIDs=0;
 			ids.removeAllElements();
-			for(int i = 0; tablaSimbolos.getValueAt(i, 0)!=null; i++){
-				tablaSimbolos.setValueAt(null, i, 0);
-				tablaSimbolos.setValueAt(null, i, 1);
-			}
+		
 			   
 			
 				//iniciar analisis lexico
@@ -182,9 +172,7 @@ public class Interfaz extends JFrame implements ActionListener, KeyListener {
 							
 							txtTokenizer.setText(txtTokenizer.getText()+token+" » "+ tipo+"\n");
 						}
-						if (tipo=="id"){
-							meterATabla(token);
-						}
+					
 						todosLosTokens.add(tipo);
 					}
 
@@ -245,12 +233,7 @@ public class Interfaz extends JFrame implements ActionListener, KeyListener {
 		
 		return linea;
 	}
-	private void meterATabla(String valor) {
-		if(ids.contains(valor)) return; //no repetir ids
-		tablaSimbolos.setValueAt(valor, cuentaIDs, 0);
-		ids.add(valor);
-		cuentaIDs++;
-	}
+
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 	}
