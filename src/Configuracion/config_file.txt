@@ -1,2 +1,5 @@
 FRAGMENTO-BASE DE DATOS-TABLA-CRITERIO-ATRIBUTOS-ESTADO
 12.12.12.12-neo4j-zona-clientes-id,cliente,nombre,ciudad,numerocasa,apellido-activo
+
+
+Fragmento - Servidor - Base De Datos -
