@@ -1,0 +1,2 @@
+NOMBRE DE TABLA-ATRIBUTOS
+Clientes-IdCliente,Nombre,Estado,Credito,Deuda
