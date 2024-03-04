@@ -213,7 +213,6 @@ public class Interfaz extends JFrame implements ActionListener, KeyListener {
 
 		if(!linea.contains("=")) return linea;
 
-		char[] arregloChars = linea.toCharArray();
 		for(int i=0; i<linea.length(); i++){
 			if(linea.charAt(i)!='=')
 				continue;
