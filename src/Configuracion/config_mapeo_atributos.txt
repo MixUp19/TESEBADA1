@@ -1,3 +1,0 @@
-clientes-centro-sur-norte
-nombre-nombreAlgoBien,name,nombrexxx
-edad-anios,vidatiempo,cacahuate

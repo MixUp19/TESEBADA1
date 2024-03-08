@@ -1,4 +1,4 @@
-Clientes-Ventas-VentasC-VentasN
+Clientes-Centro-Norte-Sur
 IdCliente-noCliente,IdCliente,IdCliente
 Nombre-Nombre,Nombre,Nobre
 Estado-Estado,Estado,Estado

@@ -11,7 +11,7 @@ public class ConfiguracionMetodos {
     public static HashMap<String,String> mapearAtributos(String nombreFragmento) {
         HashMap<String,String> mapeo = new HashMap<>();
         int fragmentoIndex = 0;
-        String path = "src/Configuracion/config_mapeo_atributos.txt";
+        String path = "src/Configuracion/mapeo_Atributos.txt";
         File archivo;
         try {
             archivo = new File(path);
@@ -20,7 +20,7 @@ public class ConfiguracionMetodos {
             String linea = bufferedReader.readLine();
             String[] fragmentos = linea.split("-");
             for(int i = 0; i < fragmentos.length; i++) {
-                if(fragmentos[i].equals(nombreFragmento)) {
+                if(fragmentos[i].equalsIgnoreCase(nombreFragmento)) {
                     fragmentoIndex = i;
                     break;
                 }
@@ -51,7 +51,7 @@ public class ConfiguracionMetodos {
             while(linea != null) {
                 String[] configuracion = linea.split("-");
                 if(configuracion[0].equals(nombreFragmento)) {
-                    nombre = configuracion[indexMalo];
+                    //nombre = configuracion[indexMalo];
                     break;
                 }
                 linea = buffReader.readLine();
