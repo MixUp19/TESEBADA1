@@ -3,6 +3,7 @@ package src.vista;
 import src.controlador.ControladorConfigTablaDist;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -16,6 +17,7 @@ public class PanConfigTablaDist extends JPanel {
     private JButton btnGuardar;
     private ControladorConfigTablaDist c;
     public PanConfigTablaDist() {
+        this.setBackground(new Color(201,250,246));
         c= new ControladorConfigTablaDist(this);
         addComponentListener(c);
         labelAtributos = new JLabel("Lista de Atributos:");

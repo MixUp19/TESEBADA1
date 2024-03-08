@@ -3,6 +3,7 @@ package src.vista;
 import src.controlador.ControladorTran;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
@@ -13,6 +14,7 @@ public class PanTran extends JPanel implements ComponentListener {
     private JLabel lblMsg;
     private ControladorTran c;
     public PanTran(){
+        this.setBackground(new Color(201,250,246));
         setLayout(null);
         c= new ControladorTran(this);
         lbltransaccion = new JLabel("Transacción:");

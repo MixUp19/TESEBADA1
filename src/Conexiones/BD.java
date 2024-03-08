@@ -8,7 +8,7 @@ public abstract class BD {
         this.ip =ip;
         this.nombreFragmento= nombreFragmento;
     }
-    public abstract void crearConexion() throws Exception;
+    public abstract void crearConexion();
     public abstract void cerrarConexion() throws Exception;
     public abstract void select(String consulta) throws Exception;
     public abstract void insert(String consulta) throws Exception;

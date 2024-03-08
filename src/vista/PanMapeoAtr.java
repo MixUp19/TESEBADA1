@@ -14,6 +14,7 @@ public class PanMapeoAtr extends JPanel {
     private boolean creado;
     private String nomTabla;
     public PanMapeoAtr(){
+        this.setBackground(new Color(201,250,246));
         creado= false;
         c = new ControladorMapeoAtr(this);
         addComponentListener(c);
@@ -25,6 +26,7 @@ public class PanMapeoAtr extends JPanel {
     }
     public void hazInterfaz(String[][] atributosFrag, String [] atributosTabla,String[] nombreFrag, String nombreTabla){
         nomTabla= nombreTabla;
+        config.setBackground(new Color(201,250,246));;
         creado= true;
         add(btnGuardar,BorderLayout.SOUTH);
         config.setLayout(new GridLayout(atributosTabla.length+1, nombreFrag.length+1));

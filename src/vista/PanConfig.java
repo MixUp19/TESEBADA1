@@ -4,6 +4,7 @@ import src.controlador.ControladorConfig;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -25,6 +26,7 @@ public class PanConfig extends JPanel{
     private boolean creada;
 
     public PanConfig(){
+        this.setBackground(new Color(201,250,246));
         c = new ControladorConfig(this);
         addComponentListener(c);
         modelo = new DefaultTableModel(data, columnNames);

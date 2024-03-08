@@ -19,6 +19,10 @@ public class Menu extends JFrame {
         setSize(1000,700);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        ImageIcon img = new ImageIcon("src/ingres.png");
+
+        this.setIconImage(img.getImage());
+        add(new JLabel(img), BorderLayout.CENTER);
         crearMenu();
         setVisible(true);
     }

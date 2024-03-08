@@ -15,15 +15,13 @@ public class ObjectDB extends BD{
     }
 
     @Override
-    public void crearConexion() throws Exception {
+    public void crearConexion() {
         Map<String,String> properties = new HashMap<String, String>();
         properties.put("javax.persistence.jdbc.user", "admin");
         properties.put("javax.persistence.jdbc.password", "admin");
         emf = Persistence.createEntityManagerFactory("objectdb://"+ip+":6136/"+objeto+".odb", properties);
     }
-
-    public void conexion(){
-  }
+    @Override
     public void cerrarConexion(){
         if (emf == null)
             return;
@@ -31,17 +29,13 @@ public class ObjectDB extends BD{
         emf = null;
     }
 
-    public void seleccionarTuplas(String tuplas) throws PersistenceException{
-
-    }
-
     @Override
-    public void select() throws PersistenceException{
-        conexion();
+    public void select(String consulta) throws PersistenceException{
+        crearConexion();
         em = emf.createEntityManager();
         try{
             em.getTransaction().begin();
-            TypedQuery<Cliente> query = em.createQuery("SELECT c FROM Cliente c", Cliente.class);
+            TypedQuery<Cliente> query = em.createQuery(consulta, Cliente.class);
             List<Cliente> results = query.getResultList();
         }catch (PersistenceException ex){
             throw ex;
@@ -49,17 +43,17 @@ public class ObjectDB extends BD{
     }
 
     @Override
-    public void insert() throws Exception {
+    public void insert(String consulta) throws Exception {
 
     }
 
     @Override
-    public void update() throws Exception {
+    public void update(String consulta) throws Exception {
 
     }
 
     @Override
-    public void delete() throws Exception {
+    public void delete(String consulta) throws Exception {
 
     }
 }

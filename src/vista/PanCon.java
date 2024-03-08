@@ -5,6 +5,7 @@ import src.controlador.ControladorTran;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
@@ -19,6 +20,7 @@ public class PanCon extends JPanel implements ComponentListener {
     private JScrollPane tablaPanel;
     public PanCon(){
         setLayout(null);
+        this.setBackground(new Color(201,250,246));
         addComponentListener(this);
         c = new ControladorCon(this);
         tablaPanel= new JScrollPane();
