@@ -1,4 +1,4 @@
-package src.Conexiones;
+/*package src.Conexiones;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
@@ -10,4 +10,4 @@ String connectionString = "mongodb://localhost:27017";
         MongoClient mongoClient = new MongoClient(new MongoClientURI(connectionString));
         MongoDatabase database = mongoClient.getDatabase(databaseName);
 }
-}
+}*/

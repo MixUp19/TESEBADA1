@@ -1,6 +1,5 @@
-package Compilador;
+package src.Compilador;
 
-import java.util.List;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

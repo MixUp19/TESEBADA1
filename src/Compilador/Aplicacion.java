@@ -1,4 +1,4 @@
-package Compilador;
+package src.Compilador;
 
 public class Aplicacion {
 

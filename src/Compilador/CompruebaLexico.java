@@ -1,4 +1,4 @@
-package Compilador;
+package src.Compilador;
 
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -71,8 +71,7 @@ public class CompruebaLexico {
         
         if(evaluarToken("^\\d*\\.\\d+$", token)) return "floatnum";
 
-        return null; 
-        // Solo llega aquí si no es ninguno de los anteriores, lo que podría ser un ERROR LÉXICO
+        return null;
     }
 
     

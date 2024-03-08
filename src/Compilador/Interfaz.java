@@ -1,4 +1,4 @@
-package Compilador;
+package src.Compilador;
 
 import java.awt.event.*;
 import java.io.*;
