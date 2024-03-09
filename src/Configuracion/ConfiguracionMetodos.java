@@ -1,13 +1,17 @@
 package src.Configuracion;
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
 
 public class ConfiguracionMetodos {
+
+    //[nombre en la tabla distribuida - nombre en el fragmento]
     public static HashMap<String,String> mapearAtributos(String nombreFragmento) {
         HashMap<String,String> mapeo = new HashMap<>();
         int fragmentoIndex = 0;
@@ -50,8 +54,8 @@ public class ConfiguracionMetodos {
             String linea = buffReader.readLine();
             while(linea != null) {
                 String[] configuracion = linea.split("-");
-                if(configuracion[0].equals(nombreFragmento)) {
-                    //nombre = configuracion[indexMalo];
+                if(configuracion[0].equalsIgnoreCase(nombreFragmento)) {
+                    nombre = configuracion[3];
                     break;
                 }
                 linea = buffReader.readLine();
@@ -64,9 +68,35 @@ public class ConfiguracionMetodos {
     }
 
     public static void main(String[] args) {
+        System.out.println("Nombre de la tabla en el fragmento X: " + getNombreTabla("centro"));
         HashMap<String,String> mapeo = mapearAtributos("norte");
         for(Map.Entry<String,String> entry : mapeo.entrySet()) {
             System.out.println(entry.getKey() + " - " + entry.getValue());
         }
+        System.out.println("Atributos definidos en mi tabla distribuida");
+        for(String x : obtenerAtributosTablaDist()) {
+            System.out.print(x + " ");
+        }
+        System.out.println();
+    }
+
+    public static ArrayList<String> obtenerAtributosTablaDist() {
+        ArrayList<String> atributos = new ArrayList<>();
+        String path = "src/Configuracion/config_tabla_dist_file.txt";
+        File archivo;
+        try {
+            archivo = new File(path);
+            BufferedReader buffReader = new BufferedReader(new FileReader(archivo));
+            buffReader.readLine();
+            String linea = buffReader.readLine();
+            String[] arr = linea.split("-");
+            for(String atrib : arr[1].split(",")) {
+                atributos.add(atrib);
+            }
+        }catch(IOException e) {
+            e.printStackTrace();
+            System.out.println("Ocurrio un problema con el archivo");
+        }
+        return atributos;
     }
 }
