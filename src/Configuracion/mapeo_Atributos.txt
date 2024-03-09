@@ -1,6 +1,6 @@
-Clientes-Centro-Norte-Sur
-IdCliente-noCliente,IdCliente,IdCliente
-Nombre-Nombre,Nombre,Nobre
-Estado-Estado,Estado,Estado
-Credito-Credito,Credito,Credito
-Deuda-Deuda,Deuda,Deuda
+Clientes-Ventas-VentasC-VentasN
+IdCliente-noCliente,IdCliente,idCliente
+Nombre-Nombre,Nombre,nombre
+Estado-Estado,Estado,estado
+Credito-Credito,Credito,credito
+Deuda-Deuda,Deuda,deuda

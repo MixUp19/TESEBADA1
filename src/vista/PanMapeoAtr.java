@@ -8,37 +8,47 @@ import java.awt.*;
 public class PanMapeoAtr extends JPanel {
     private JComboBox[][] atributosFragmentos;
     private JLabel atributosDistribuida[], nombreFrag[], nombreTabla;
-    private JPanel config;
+    private JPanel panelConfiguracion;
     private ControladorMapeoAtr c;
     private JButton btnGuardar;
     private boolean creado;
     private String nomTabla;
+    private Font fuente;
     public PanMapeoAtr(){
+        fuente = new Font("Verdana", Font.PLAIN, 16);
         creado= false;
         c = new ControladorMapeoAtr(this);
         addComponentListener(c);
         btnGuardar= new JButton("Guardar");
+        btnGuardar.setFont(fuente);
         btnGuardar.addActionListener(c);
-        config= new JPanel();
+        panelConfiguracion = new JPanel();
+        panelConfiguracion.setBackground(new Color(241, 255, 198));
+        setBackground(new Color(241, 255, 198));
         setLayout(new BorderLayout());
         nombreTabla= new JLabel("Nombre de la tabla: ");
+        nombreTabla.setFont(fuente);
     }
     public void hazInterfaz(String[][] atributosFrag, String [] atributosTabla,String[] nombreFrag, String nombreTabla){
         nomTabla= nombreTabla;
         creado= true;
         add(btnGuardar,BorderLayout.SOUTH);
-        config.setLayout(new GridLayout(atributosTabla.length+1, nombreFrag.length+1));
+        panelConfiguracion.setLayout(new GridLayout(atributosTabla.length+1, nombreFrag.length+1));
         this.nombreTabla.setText("Nombre de la tabla: "+nombreTabla);
+        this.nombreTabla.setFont(fuente);
         add(this.nombreTabla, BorderLayout.NORTH);
 
         atributosDistribuida = new JLabel[atributosTabla.length];
         for (int i = 0; i < atributosTabla.length; i++) {
             atributosDistribuida[i]= new JLabel(atributosTabla[i]+":");
+            atributosDistribuida[i].setFont(fuente);
         }//c
 
         this.nombreFrag= new JLabel[nombreFrag.length];
         for (int i = 0; i < this.nombreFrag.length; i++) {
             this.nombreFrag[i]= new JLabel(nombreFrag[i]);
+            this.nombreFrag[i].setFont(fuente);
+
         }//C
 
         atributosFragmentos = new JComboBox[atributosTabla.length][nombreFrag.length];
@@ -51,21 +61,21 @@ public class PanMapeoAtr extends JPanel {
         for (int i = 0; i < atributosTabla.length+1 ; i++) {
             for (int j = 0; j < nombreFrag.length+1; j++) {
                 if(i==0&&j==0){
-                    config.add(new JLabel("Atributos distribuida"));
+                    panelConfiguracion.add(new JLabel("Atributos distribuida"));
                     continue;
                 }
                 if(i==0) {
-                    config.add(this.nombreFrag[j - 1]);
+                    panelConfiguracion.add(this.nombreFrag[j - 1]);
                     continue;
                 }
                 if(j==0){
-                    config.add(this.atributosDistribuida[i-1]);
+                    panelConfiguracion.add(this.atributosDistribuida[i-1]);
                     continue;
                 }
-                config.add(atributosFragmentos[i-1][j-1]);
+                panelConfiguracion.add(atributosFragmentos[i-1][j-1]);
             }
         }
-        add(config,BorderLayout.CENTER);
+        add(panelConfiguracion,BorderLayout.CENTER);
     }
 
     public String[] getMapeo(){
@@ -93,7 +103,7 @@ public class PanMapeoAtr extends JPanel {
         if(mapeo.length==0){
             return;
         }
-        for (int i = 0; i < mapeo.length; i++) {
+        for (int i = 1; i < mapeo.length; i++) {
             String [] tablaAtributo= mapeo[i].split("-");
             String[] atributo = tablaAtributo[1].split(",");
             for (int j = 0; j < atributo.length; j++) {

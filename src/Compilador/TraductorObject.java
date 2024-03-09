@@ -1,21 +1,17 @@
-package src.Conexiones;
+package src.Compilador;
+
+
+import java.util.ArrayList;
+
 
 import org.apache.commons.lang3.StringUtils;
+import src.Conexiones.Cliente;
 import src.archivos.Archivos;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-/*public class ObjectDB extends BD{
-    private String objeto;
-    EntityManager em;
-    EntityManagerFactory emf;
-    public ObjectDB(String ip, String nombreFragmento, String objeto){
-        super(ip,nombreFragmento);
-        this.objeto=objeto;
+public class TraductorObject {
+    public static void main(String[] args) {
+        String consultaSQL = "update Clientes set credito= credito*1.10 where idcliente=10" ;
+        System.out.println(traducirConsultaSQL(reemplazo(consultaSQL,obtenerAtributos())));
     }
     public static String[] obtenerAtributos(){
         Archivos archivos = new Archivos();
@@ -56,6 +52,13 @@ import java.util.Map;
         return consultaSQL;
     }
     public static String traducirConsultaSQL(String consultaSQL) {
+        if(StringUtils.containsIgnoreCase(consultaSQL,"insert")){
+            insertar(consultaSQL);
+            return "";
+        }
+        if(StringUtils.containsIgnoreCase(consultaSQL,"insert")) {
+            return "";
+        }
         String consultaSQLaux= consultaSQL.toLowerCase();
         String recurso = StringUtils.substringAfter(consultaSQLaux, "from");
         recurso = recurso.split(" ")[1];
@@ -118,36 +121,7 @@ import java.util.Map;
         condicionBuilder.trimToSize();
         return  condicionBuilder.toString();
     }
-    @Override
-    public void crearConexion() {
-        Map<String,String> properties = new HashMap<String, String>();
-        properties.put("javax.persistence.jdbc.user", "admin");
-        properties.put("javax.persistence.jdbc.password", "admin");
-        emf = Persistence.createEntityManagerFactory("objectdb://"+ip+":6136/"+objeto+".odb", properties);
-    }
-    @Override
-    public void cerrarConexion(){
-        if (emf == null)
-            return;
-        emf.close();
-        emf = null;
-    }
-
-    @Override
-    public void select(String consulta) throws PersistenceException{
-        crearConexion();
-        em = emf.createEntityManager();
-        try{
-            em.getTransaction().begin();
-            TypedQuery<Cliente> query = em.createQuery(consulta, Cliente.class);
-            List<Cliente> results = query.getResultList();
-        }catch (PersistenceException ex){
-            throw ex;
-        }
-    }
-
-    @Override
-    public void insert(String consulta) throws Exception {
+    public static void insertar(String consulta){
         consulta = StringUtils.removeStartIgnoreCase(consulta,"insert");
         String campos = StringUtils.substring(consulta, consulta.indexOf('(')+1, consulta.indexOf(')') );
         String datos = StringUtils.substring(consulta, StringUtils.indexOfIgnoreCase(consulta, "values"));
@@ -175,17 +149,5 @@ import java.util.Map;
                     break; }
             }
         }
-        em.persist(c);
     }
-
-    @Override
-    public void update(String consulta) throws Exception {
-        consulta = traducirConsultaSQL(consulta);
-
-    }
-
-    @Override
-    public void delete(String consulta) throws Exception {
-
-    }
-}*/
+}
