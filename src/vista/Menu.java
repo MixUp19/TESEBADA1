@@ -24,7 +24,7 @@ public class Menu extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         crearMenu();
         setBackground(new Color(241, 255, 198));
-
+System.out.println();
         setVisible(true);
     }
     private void crearMenu(){
