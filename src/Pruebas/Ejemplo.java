@@ -1,4 +1,4 @@
-package Pruebas;
+package src.Pruebas;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -6,7 +6,7 @@ public class Ejemplo {
     public static void main(String[] args) {
         @SuppressWarnings("resource")
 		Scanner scanner = new Scanner(System.in);
-        String consultaSQL = "SELECT id FROM usuarios WHERE id = 10";
+        String consultaSQL = "SELECT id, nombre, credito FROM usuarios WHERE id = 10";
         String consultaCypher = traducirConsultaSQL(consultaSQL);
         System.out.println("Consulta Cypher equivalente:");
         System.out.println(consultaCypher);
