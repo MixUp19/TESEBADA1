@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ObjectDB extends BD{
+/*public class ObjectDB extends BD{
     private String objeto;
     EntityManager em;
     EntityManagerFactory emf;
@@ -188,4 +188,4 @@ public class ObjectDB extends BD{
     public void delete(String consulta) throws Exception {
 
     }
-}
+}*/
