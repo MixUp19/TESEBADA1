@@ -17,7 +17,6 @@ public class AnalizadorSintactico {
         for (String token : tokens) {
             todosLosTokensString += token + " ";
         }
-        System.out.println(todosLosTokensString);
     }
 
     public void analizar() {
