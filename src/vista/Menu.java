@@ -69,23 +69,18 @@ public class Menu extends JFrame {
         revalidate();
         repaint();
     }
-
     public JMenuItem getItemConfiguracion() {
         return itemConfiguracion;
     }
-
     public JMenuItem getItemTransaccion() {
         return itemTransaccion;
     }
-
     public JMenuItem getItemConsulta() {
         return itemConsulta;
     }
-
     public JMenuItem getItemSalir() {
         return itemSalir;
     }
-
     public JMenuItem getItemConfigTablaDist() {
         return itemConfigTablaDist;
     }
