@@ -103,7 +103,7 @@ public class PanMapeoAtr extends JPanel {
         if(mapeo.length==0){
             return;
         }
-        for (int i = 0; i < mapeo.length; i++) {
+        for (int i = 1; i < mapeo.length; i++) {
             String [] tablaAtributo= mapeo[i].split("-");
             String[] atributo = tablaAtributo[1].split(",");
             for (int j = 0; j < atributo.length; j++) {

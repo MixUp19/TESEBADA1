@@ -51,7 +51,7 @@ public class Archivos {
             archivo.createNewFile();
             FileWriter writer = new FileWriter(archivo);
             writer.write("");
-            writer.write("FRAGMENTO-BASE DE DATOS-TABLA-CRITERIO-ATRIBUTOS-ESTADO\n");
+            writer.write("NombreFragmento-FRAGMENTO-BASE DE DATOS-TABLA-CRITERIO-ATRIBUTOS-ESTADO\n");
 
             for (int i = 0; i < datos.length ; i++) {
                 if(datos[i] == null){
@@ -123,7 +123,7 @@ public class Archivos {
         try{
             archivo = new FileReader(path);
             BufferedReader reader = new BufferedReader(archivo);
-            String linea= reader.readLine();
+            String linea;
             linea= reader.readLine();
             while (linea!=null){
                 mapeo.add(linea);
