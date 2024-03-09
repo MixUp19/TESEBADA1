@@ -13,13 +13,18 @@ public class PanTran extends JPanel implements ComponentListener {
     private JButton btnTransaccion;
     private JLabel lblMsg;
     private ControladorTran c;
+    private Font fuente;
     public PanTran(){
-        this.setBackground(new Color(201,250,246));
+        fuente = new Font("Verdana", Font.PLAIN, 16);
         setLayout(null);
+        setBackground(new Color(241, 255, 198));
         c= new ControladorTran(this);
         lbltransaccion = new JLabel("Transacción:");
+        lbltransaccion.setFont(fuente);
         txtTransaccion = new JTextField();
+        txtTransaccion.setFont(fuente);
         btnTransaccion = new JButton("Ejecutar.");
+        btnTransaccion.setFont(fuente);
         lblMsg = new JLabel("Esto es un mensaje de prueba");
         addComponentListener(this);
         hazInterfaz();

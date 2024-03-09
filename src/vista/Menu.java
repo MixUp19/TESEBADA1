@@ -7,16 +7,19 @@ import java.awt.*;
 
 public class Menu extends JFrame {
     private JMenuBar menu;
-    private JMenuItem conf;
-    private JMenuItem tran;
-    private JMenuItem con;
-    private JMenuItem sal;
-    private JMenuItem mapAtr;
-    private JMenuItem conf_tabla_dist;
-    public Menu() {
+    private JMenuItem itemConfiguracion;
+    private JMenuItem itemTransaccion;
+    private JMenuItem itemConsulta;
+    private JMenuItem itemSalir;
+    private JMenuItem itemMapaAtributo;
+    private JMenuItem itemConfigTablaDist;
 
+
+    public Menu() {
         menu= new JMenuBar();
+        menu.setBackground(new Color(233, 251, 152));
         setSize(1000,700);
+
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         ImageIcon img = new ImageIcon("src/ingres.png");
@@ -24,33 +27,37 @@ public class Menu extends JFrame {
         this.setIconImage(img.getImage());
         add(new JLabel(img), BorderLayout.CENTER);
         crearMenu();
+        setBackground(new Color(241, 255, 198));
+System.out.println();
         setVisible(true);
     }
     private void crearMenu(){
         JMenu opciones = new JMenu("Opciones");
-        conf_tabla_dist = new JMenuItem("Configuracion De Tabla Distribuida");
-        conf= new JMenuItem ("Configuración De Fragmentos");
-        tran = new JMenuItem("Transacción");
-        con = new JMenuItem("Consulta");
-        sal = new JMenuItem("Salir");
-        mapAtr= new JMenuItem("Mapeo de Atributos");
-        opciones.add(conf_tabla_dist);
-        opciones.add(conf);
-        opciones.add(mapAtr);
-        opciones.add(tran);
-        opciones.add(con);
-        opciones.add(sal);
+
+        itemConfigTablaDist = new JMenuItem("Configuracion De Tabla Distribuida");
+        itemConfiguracion = new JMenuItem ("Configuración De Fragmentos");
+        itemTransaccion = new JMenuItem("Transacción");
+        itemConsulta = new JMenuItem("Consulta");
+        itemSalir = new JMenuItem("Salir");
+        itemMapaAtributo = new JMenuItem("Mapeo de Atributos");
+        opciones.add(itemConfigTablaDist);
+        opciones.add(itemConfiguracion);
+        opciones.add(itemMapaAtributo);
+        opciones.add(itemTransaccion);
+        opciones.add(itemConsulta);
+        opciones.add(itemSalir);
         menu.add(opciones);
         add(menu, BorderLayout.NORTH);
+
     }
     public void hazEscuchas(Controlador c){
         System.out.println("Entra");
-        conf_tabla_dist.addActionListener(c);
-        mapAtr.addActionListener(c);
-        conf.addActionListener(c);
-        tran.addActionListener(c);
-        con.addActionListener(c);
-        sal.addActionListener(c);
+        itemConfigTablaDist.addActionListener(c);
+        itemMapaAtributo.addActionListener(c);
+        itemConfiguracion.addActionListener(c);
+        itemTransaccion.addActionListener(c);
+        itemConsulta.addActionListener(c);
+        itemSalir.addActionListener(c);
     }
     public void anadirPanel(JPanel panel){
         getContentPane().removeAll();
@@ -60,26 +67,26 @@ public class Menu extends JFrame {
         repaint();
     }
 
-    public JMenuItem getConf() {
-        return conf;
+    public JMenuItem getItemConfiguracion() {
+        return itemConfiguracion;
     }
 
-    public JMenuItem getTran() {
-        return tran;
+    public JMenuItem getItemTransaccion() {
+        return itemTransaccion;
     }
 
-    public JMenuItem getCon() {
-        return con;
+    public JMenuItem getItemConsulta() {
+        return itemConsulta;
     }
 
-    public JMenuItem getSal() {
-        return sal;
+    public JMenuItem getItemSalir() {
+        return itemSalir;
     }
 
-    public JMenuItem getConf_tabla_dist() {
-        return conf_tabla_dist;
+    public JMenuItem getItemConfigTablaDist() {
+        return itemConfigTablaDist;
     }
-    public JMenuItem getMapAtr(){
-        return mapAtr;
+    public JMenuItem getItemMapaAtributo(){
+        return itemMapaAtributo;
     }
 }

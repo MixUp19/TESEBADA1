@@ -16,16 +16,23 @@ public class PanConfigTablaDist extends JPanel {
     private JTextField nombreTablaTxt, atributosTxt;
     private JButton btnGuardar;
     private ControladorConfigTablaDist c;
+    private Font fuente;
     public PanConfigTablaDist() {
-        this.setBackground(new Color(201,250,246));
+        fuente = new Font("Verdana", Font.PLAIN, 16);
         c= new ControladorConfigTablaDist(this);
         addComponentListener(c);
         labelAtributos = new JLabel("Lista de Atributos:");
+        labelAtributos.setFont(fuente);
         labelNombreTabla = new JLabel("Nombre de la tabla:");
+        labelNombreTabla.setFont(fuente);
         nombreTablaTxt = new JTextField();
+        nombreTablaTxt.setFont(fuente);
         atributosTxt = new JTextField();
+        atributosTxt.setFont(fuente);
         btnGuardar = new JButton("Guardar");
+        btnGuardar.setFont(fuente);
         setLayout(null);
+        setBackground(new Color(241, 255, 198));
         hazInterfaz();
         this.btnGuardar.addActionListener(c);
     }

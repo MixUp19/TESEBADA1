@@ -18,16 +18,22 @@ public class PanCon extends JPanel implements ComponentListener {
     private DefaultTableModel modelo;
     private JTable tablaConsulta;
     private JScrollPane tablaPanel;
+    private Font fuente;
     public PanCon(){
+        fuente = new Font("Verdana", Font.PLAIN, 16);
+        setBackground(new Color(241, 255, 198));
         setLayout(null);
         this.setBackground(new Color(201,250,246));
         addComponentListener(this);
         c = new ControladorCon(this);
         tablaPanel= new JScrollPane();
         lblConsulta = new JLabel("Consultar: ");
+        lblConsulta.setFont(fuente);
         txtConsulta = new JTextField();
+        txtConsulta.setFont(fuente);
         btnConsulta = new JButton("Consultar");
         lblMsg= new JLabel();
+        lblMsg.setFont(fuente);
         hazInterfaz();
         hazEscuchas();
     }

@@ -33,6 +33,7 @@ public class PanConfig extends JPanel{
         guardarConfiguracionBtn = new JButton("Guardar");
         btnAnadirFila = new JButton("+");
         setLayout(null);
+        setBackground(new Color(241, 255, 198));
         tableConfig = new JTable(modelo);
         hazInterfaz();
         creada= false;

@@ -13,26 +13,26 @@ public class Controlador implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == menuPantalla.getConf_tabla_dist()) {
+        if(e.getSource() == menuPantalla.getItemConfigTablaDist()) {
             menuPantalla.anadirPanel(new PanConfigTablaDist());
             return;
         }
-        if(e.getSource() ==menuPantalla.getConf()){
+        if(e.getSource() ==menuPantalla.getItemConfiguracion()){
             menuPantalla.anadirPanel(new PanConfig());
             return;
         }
-        if(e.getSource() == menuPantalla.getTran()){
+        if(e.getSource() == menuPantalla.getItemTransaccion()){
             menuPantalla.anadirPanel(new PanTran());
             return;
         }
-        if (e.getSource()== menuPantalla.getCon()){
+        if (e.getSource()== menuPantalla.getItemConsulta()){
             menuPantalla.anadirPanel(new PanCon());
             return;
         }
-        if(e.getSource()== menuPantalla.getMapAtr()){
+        if(e.getSource()== menuPantalla.getItemMapaAtributo()){
             menuPantalla.anadirPanel(new PanMapeoAtr());
         }
-        if (e.getSource()==menuPantalla.getSal()){
+        if(e.getSource()== menuPantalla.getItemSalir()){
             System.exit(0);
         }
     }
