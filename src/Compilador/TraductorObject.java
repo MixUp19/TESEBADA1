@@ -4,7 +4,7 @@ package src.Compilador;
 import java.util.ArrayList;
 
 
-import org.apache.commons.lang3.StringUtils;
+/*import org.apache.commons.lang3.StringUtils;
 import src.Conexiones.Cliente;
 import src.archivos.Archivos;
 
@@ -150,4 +150,4 @@ public class TraductorObject {
             }
         }
     }
-}
+}*/

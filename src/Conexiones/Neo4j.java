@@ -6,27 +6,36 @@ import src.Configuracion.ConfiguracionMetodos;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Neo4j extends BD implements AutoCloseable{
+public class Neo4j extends BD implements AutoCloseable, Runnable{
     private Driver driver;
-    private String ip, nombreFragmento, user, password;
-    public Neo4j(String ip, String nombreFragmento, String user, String password) {
+    private Session sesion;
+    private String user, password;
+    private String sentenciaAEjecutar;
+    private Transaction transaccion;
+    public Neo4j(String sentenciaAEjecutar, String ip, String nombreFragmento, String user, String password) {
         super(ip, nombreFragmento);
         this.user = user;
+        this.sentenciaAEjecutar = sentenciaAEjecutar;
         this.password = password;
     }
 
     @Override
-    public void crearConexion() throws Exception {
+    public void crearConexion() {
         driver = GraphDatabase.driver("bolt://" + ip + ":7687", AuthTokens.basic(user, password));
     }
 
     @Override
-    public void cerrarConexion() throws Exception {
-        close();
+    public void cerrarConexion() {
+        try {
+            close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Ocurrio un problema al cerrar la conexion en el fragmento " + nombreFragmento);
+        }
     }
 
     @Override
-    public void select(String consulta) throws Exception {
+    public String select(String consulta) {
         HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
 
         String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
@@ -56,10 +65,7 @@ public class Neo4j extends BD implements AutoCloseable{
             cipherCodigo += "n";
         }
 
-
-        //mandar a llamar con la transaccion
-        //aca abajo el return
-        //MATCH (n:Clientes) WHERE n.edad = 12 and n.nombre = 'Yosef' RETURN n si es * o cada uno de los atributos
+        return cipherCodigo;
     }
 
     /*public static void selectdos(String consulta, String nombreFragmento) {
@@ -95,13 +101,25 @@ public class Neo4j extends BD implements AutoCloseable{
     }*/
 
     public static void main(String[] args) {
-        /*selectdos("select * from Clientes", "Centro");
-        insertDos("insert into Clientes(IdCliente, Nombre, Estado, Credito, Deuda) values(1, 'yosef', 'sinaloa', 12.2, 10000)","Centro");
-        updateDos("update Clientes set Nombre = 'yosef' where IdCliente = 2 and Estado = Sinaloa", "Centro");
-        deleteDos("DELETE from Clientes where IdCliente = 2 and Estado = 'sinaloa'", "Centro");*/
-        Neo4j fragmento_centro = new Neo4j("25.9.55.242", "Centro", "neo4j", "emiliano");
-        //intentar insertar un nodo
 
+        //inserto into Clientes(IdCliente,Nombre,Estado,Credito,Deuda) values(13, 'Joaquin', 'Sinaloa', 1000, 700)
+        //DELETE FROM Clientes where Nombre = 'Joaquin'
+        //update Clientes set Deuda = 3333 where IdCliente = 12
+        String sentenciaDistribuida = "inserto into Clientes(IdCliente,Nombre,Estado,Credito,Deuda) values(1111, 'Ricardo', 'Sinaloa', 1000, 700)";
+
+        Neo4j neo = new Neo4j(sentenciaDistribuida, "25.9.55.242", "VentasC", "neo4j", "emiliano");
+
+        try {
+            neo.ejecutarTransaccion();
+            neo.commit();
+        } catch (Exception e) {
+            try {
+                neo.rollback();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
     }
 
     /*public static void insertDos(String consulta,String nombreFragmento) {
@@ -122,7 +140,7 @@ public class Neo4j extends BD implements AutoCloseable{
     }*/
 
     @Override
-    public void insert(String consulta) throws Exception {
+    public String insert(String consulta) {
         Query q = new Query(consulta);
         String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
         String cipherCodigo = "CREATE (n:" + nombreTabla + " {";
@@ -136,6 +154,8 @@ public class Neo4j extends BD implements AutoCloseable{
             cipherCodigo += atributos.get(i) + ":" + expresiones.get(i);
         }
         cipherCodigo += "})";
+
+        return cipherCodigo;
     }
 
     /*public static void updateDos(String consulta,String nombreFragmento) {
@@ -158,7 +178,7 @@ public class Neo4j extends BD implements AutoCloseable{
     }*/
 
     @Override
-    public void update(String consulta) throws Exception {
+    public String update(String consulta) {
         HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
         Query q = new Query(consulta);
         String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
@@ -174,6 +194,8 @@ public class Neo4j extends BD implements AutoCloseable{
         ArrayList<String> atributos = q.getAtributosUsados();
         ArrayList<String> expresiones = q.getExpresiones();
         cipherCodigo += "SET n." + mapeo.get(atributos.get(0)) + " = " + expresiones.get(0);
+
+        return cipherCodigo;
     }
 
     /*public static void deleteDos(String consulta, String nombreFragmento) {
@@ -194,7 +216,7 @@ public class Neo4j extends BD implements AutoCloseable{
     }*/
 
     @Override
-    public void delete(String consulta) throws Exception {
+    public String delete(String consulta) {
         HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
         Query q = new Query(consulta);
         String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
@@ -208,25 +230,55 @@ public class Neo4j extends BD implements AutoCloseable{
             }
         }
         cipherCodigo += "DELETE n";
+
+        return cipherCodigo;
     }
 
     @Override
     public void commit() throws Exception {
-        //aqui es donde va a hacer commit
+        this.transaccion.commit();
+        this.sesion.close();
     }
 
     @Override
     public void rollback() throws Exception {
-        //aqui es donde va a hacer el rollback
+        this.transaccion.rollback();
+        this.sesion.close();
     }
 
     @Override
     public void ejecutarTransaccion() throws Exception {
-        //aqui es donde van a abrir la transaccion pero no van a hacer el commit
+        String cipherCodigo;
+        if(sentenciaAEjecutar.contains("insert")) {
+            cipherCodigo = insert(sentenciaAEjecutar);
+        }else if(sentenciaAEjecutar.contains("update")) {
+            cipherCodigo = update(sentenciaAEjecutar);
+        }else if(sentenciaAEjecutar.contains("select")) {
+            cipherCodigo = select(sentenciaAEjecutar);
+        }else {
+            cipherCodigo = delete(sentenciaAEjecutar);
+        }
+        System.out.println(cipherCodigo);
+        crearConexion();
+        sesion = driver.session(SessionConfig.builder().withDatabase("neo4j").build());
+        transaccion = sesion.beginTransaction();
+        transaccion.run(cipherCodigo);
     }
 
     @Override
     public void close() throws Exception {
         driver.close();
+    }
+
+    @Override
+    public void run() {
+        try {
+            ejecutarTransaccion();
+            TERMINADO = true;
+            cerrarConexion();
+        } catch (Exception e) {
+            TERMINADO = false;
+            cerrarConexion();
+        }
     }
 }

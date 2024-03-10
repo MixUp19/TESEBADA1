@@ -3,19 +3,18 @@ package src.Conexiones;
 import src.Configuracion.ConfiguracionMetodos;
 
 import java.io.ObjectInputFilter;
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SqlServer extends BD{
+public class SqlServer extends BD implements Runnable{
     private String usuario, password, ip, nombreBaseDeDatos, url, nombreFragmento;
+    private String sentenciaAEjecutar;
     private Connection conexion;
-    public SqlServer(String usuario, String password, String ip, String nombreFragmento, String nombreBaseDeDatos) {
+    public SqlServer(String sentenciaAEjecutar, String usuario, String password, String ip, String nombreFragmento, String nombreBaseDeDatos) {
         super(ip, nombreFragmento);
         this.usuario = usuario;
+        this.sentenciaAEjecutar = sentenciaAEjecutar;
         this.nombreFragmento = nombreFragmento;
         this.password = password;
         this.nombreBaseDeDatos = nombreBaseDeDatos;
@@ -37,16 +36,16 @@ public class SqlServer extends BD{
         conexion.close();
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         //aqui calar que lo convierta bien
         SqlServer aux = new SqlServer("","","","Norte","");
         aux.insert("insert into Clientes(IdCliente, Nombre, Estado, Credito, Deuda) values (12, 'yosef', 'durango', 10000, 5000)");
         aux.update("update Clientes set nombre = 'yosef' where IdCliente = 23");
         aux.select("select IdCliente, Nombre, Estado from Clientes where Deuda < 12333");
         aux.delete("delete Clientes where IdCliente = 1");
-    }
+    }*/
 
-    public void insert(String query) {
+    public String insert(String query) {
         HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
         Query q = new Query(query);
         String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
@@ -69,9 +68,9 @@ public class SqlServer extends BD{
             sqlCodigo += expresiones.get(i);
         }
         sqlCodigo += ")";
-        System.out.println(sqlCodigo);
+        return sqlCodigo;
     }
-    public void delete(String query) {
+    public String delete(String query) {
         HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
         Query q = new Query(query);
         String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
@@ -85,25 +84,14 @@ public class SqlServer extends BD{
                 sqlCodigo += condicion[i];
             }
         }
-        System.out.println(sqlCodigo);
+        return sqlCodigo;
     }
 
-    @Override
-    public void commit() throws Exception {
-
-    }
-
-    @Override
-    public void rollback() throws Exception {
+    public static void main(String[] args) {
 
     }
 
-    @Override
-    public void ejecutarTransaccion() throws Exception {
-
-    }
-
-    public void select(String query) {
+    public String select(String query) {
         Query q = new Query(query);
         String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
         HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
@@ -129,9 +117,9 @@ public class SqlServer extends BD{
                 sqlCodigo += cond;
             }
         }
-        System.out.println(sqlCodigo);
+        return sqlCodigo;
     }
-    public void update(String query) {
+    public String update(String query) {
         HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
         Query q = new Query(query);
         String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
@@ -145,7 +133,47 @@ public class SqlServer extends BD{
             }
             sqlCodigo += str + " ";
         }
-        System.out.println(sqlCodigo);
+        return sqlCodigo;
+    }
+
+    @Override
+    public void commit() throws Exception {
+        PreparedStatement statement = conexion.prepareStatement("COMMIT TRAN");
+        statement.executeUpdate();
+    }
+
+    @Override
+    public void rollback() throws Exception {
+        PreparedStatement statement = conexion.prepareStatement("ROLLBACK TRAN");
+        statement.executeUpdate();
+    }
+
+    @Override
+    public void ejecutarTransaccion() throws Exception {
+        String sqlCodigo;
+        if(sentenciaAEjecutar.contains("insert")) {
+            sqlCodigo = insert(sentenciaAEjecutar);
+        }else if(sentenciaAEjecutar.contains("delete")) {
+            sqlCodigo = delete(sentenciaAEjecutar);
+        }else if(sentenciaAEjecutar.contains("update")) {
+            sqlCodigo = update(sentenciaAEjecutar);
+        }else {
+            sqlCodigo = select(sentenciaAEjecutar);
+        }
+        crearConexion();
+
+        cerrarConexion();
+    }
+
+    @Override
+    public void run() {
+        try {
+            ejecutarTransaccion();
+            this.TERMINADO = true;
+        } catch (Exception e) {
+            this.TERMINADO = false;
+            System.out.println("Ocurrio un error en el fragmento: " + nombreFragmento);
+        }
     }
     /*public boolean ejecutarTransaccion(String query) {
         //insert - update - delete - select

@@ -1,18 +1,20 @@
 package src.Conexiones;
 
 public abstract class BD {
-    String ip;
-    String nombreFragmento;
+    protected String ip;
+    protected String nombreFragmento;
+    protected boolean TERMINADO;
     public BD(String ip, String nombreFragmento){
         this.ip =ip;
+        this.TERMINADO = false;
         this.nombreFragmento= nombreFragmento;
     }
-    public abstract void crearConexion();
+    public abstract void crearConexion() throws Exception;
     public abstract void cerrarConexion() throws Exception;
-    public abstract void select(String consulta) throws Exception;
-    public abstract void insert(String consulta) throws Exception;
-    public abstract void update(String consulta) throws Exception;
-    public abstract void delete(String consulta) throws Exception;
+    public abstract Object select(String consulta);
+    public abstract Object insert(String consulta);
+    public abstract Object update(String consulta);
+    public abstract Object delete(String consulta);
     public abstract void commit() throws Exception;
     public abstract void rollback() throws Exception;
     public abstract void ejecutarTransaccion() throws Exception;
