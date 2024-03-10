@@ -147,8 +147,8 @@ public class SqlServer extends BD implements Runnable{
 
     @Override
     public void commit() throws Exception {
-        PreparedStatement statement = conexion.prepareStatement("COMMIT TRAN");
-        statement.executeUpdate();
+        conexion.commit();
+        cerrarConexion();
     }
 
     @Override
