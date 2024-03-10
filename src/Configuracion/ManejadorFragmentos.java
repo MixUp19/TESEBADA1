@@ -30,8 +30,8 @@ public class ManejadorFragmentos {
     }
 
     private void info() {
-        for (int i = 0; i < info.length; i++) {
-            fragmentos.put(info[i][4], info[i][info[i].length - 1]);
+        for (Object[] objects : info) {
+            fragmentos.put(objects[4], objects[objects.length - 1]);
         }
     }
     public String comprobarInsert(String consulta){
