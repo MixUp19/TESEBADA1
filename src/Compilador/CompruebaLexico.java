@@ -40,6 +40,12 @@ public class CompruebaLexico {
         keywordsAndOperatorsMap.put("nombreEstado", "atributo");
         keywordsAndOperatorsMap.put("credito", "atributo");
         keywordsAndOperatorsMap.put("deuda", "atributo");
+        keywordsAndOperatorsMap.put("'sur'", "atributo");
+        keywordsAndOperatorsMap.put("'norte'", "atributo");
+        keywordsAndOperatorsMap.put("'centro'", "atributo");
+        keywordsAndOperatorsMap.put("zona", "atributo");
+
+
 
 
     }
