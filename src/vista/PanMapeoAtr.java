@@ -8,12 +8,12 @@ import java.awt.*;
 public class PanMapeoAtr extends JPanel {
     private JComboBox[][] atributosFragmentos;
     private JLabel atributosDistribuida[], nombreFrag[], nombreTabla;
-    private JPanel panelConfiguracion;
+    private final JPanel panelConfiguracion;
     private ControladorMapeoAtr c;
     private JButton btnGuardar;
     private boolean creado;
     private String nomTabla;
-    private Font fuente;
+    private final Font fuente;
     public PanMapeoAtr(){
         fuente = new Font("Verdana", Font.PLAIN, 16);
         creado= false;

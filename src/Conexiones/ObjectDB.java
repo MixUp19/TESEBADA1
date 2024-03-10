@@ -15,7 +15,7 @@ public class ObjectDB extends BD{
     private EntityManager em;
     private EntityManagerFactory emf;
     private String resultadoConsulta;
-    public ObjectDB(String ip, String nombreFragmento, String objeto, String consultaEjecutar){
+    public ObjectDB(String ip, String nombreFragmento, String objeto){
         super(ip,nombreFragmento);
         this.objeto=objeto;
         this.consultaEjecutar=reemplazo(consultaEjecutar,obtenerAtributos());

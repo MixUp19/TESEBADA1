@@ -52,7 +52,7 @@ public class PanTran extends JPanel implements ComponentListener {
     }
     public void ponerMensaje(String msg){
         lblMsg.setText(msg);
-        lblMsg.setVisible(true);
+        lblMsg.setVisible(false);
     }
     @Override
     public void componentResized(ComponentEvent e) {
