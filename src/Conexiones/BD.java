@@ -1,6 +1,6 @@
 package src.Conexiones;
 
-public abstract class BD {
+public abstract class BD implements Runnable{
     protected String ip;
     protected String nombreFragmento;
     public BD(String ip, String nombreFragmento){

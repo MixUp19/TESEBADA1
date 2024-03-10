@@ -4,13 +4,16 @@ import java.util.Vector;
 
 public class Analizador {
     private  Vector<String> todosLosTokens;
+    boolean bandErrorLexico;
+    StringBuilder txtAreaErrores;
     public Analizador(){
         todosLosTokens = new Vector<>();
+        bandErrorLexico=false;
+        txtAreaErrores= new StringBuilder();
+
     }
 
-    public String realizarAnalisisLexico(String codigoFuente) {
-        boolean bandErrorLexico = false;
-        StringBuilder txtAreaErrores = new StringBuilder();
+    public Boolean realizarAnalisisLexico(String codigoFuente) {
 
         CompruebaLexico analizador = new CompruebaLexico();
         String tipo;
@@ -34,12 +37,10 @@ public class Analizador {
                 todosLosTokens.add(tipo);
             }
         }
-
-        if (!bandErrorLexico) {
-            return "Análisis léxico completado sin errores.";
-        } else {
-            return txtAreaErrores.toString();
-        }
+        return bandErrorLexico;
+    }
+    public String getTxtAreaErrores (){
+        return txtAreaErrores.toString();
     }
 
     public void realizarAnalisisSintactico() {

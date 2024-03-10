@@ -18,7 +18,7 @@ public class ControladorCon implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        JOptionPane.showMessageDialog(null, Manejador.verificador(v.obtenerConsulta().toLowerCase()), "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, Manejador.verificadorZonaActiva(v.obtenerConsulta().toLowerCase()), "Mensaje", JOptionPane.INFORMATION_MESSAGE);
         String [] encabezados = {"ID", "Nombre", "Estado", "Credito", "Deuda"};
         Object [][] datos= {{"Esto","es","una","prueba",":)"}};
         v.mostrarConsulta(datos, encabezados);

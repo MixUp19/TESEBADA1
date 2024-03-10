@@ -19,10 +19,13 @@ public class ControladorTran implements ActionListener {
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        JOptionPane.showMessageDialog(null, Analizador.realizarAnalisisLexico(v.obtenerInstruccion().toLowerCase()), "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+        if(Analizador.realizarAnalisisLexico(v.obtenerInstruccion().toLowerCase())){
+            JOptionPane.showMessageDialog(null, Analizador.getTxtAreaErrores(), "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
         Analizador.realizarAnalisisSintactico();
-        v.ponerMensaje(v.obtenerInstruccion());
-        JOptionPane.showMessageDialog(null, Manejador.verificador(v.obtenerInstruccion().toLowerCase()), "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+
+        JOptionPane.showMessageDialog(null, Manejador.verificadorZonaActiva(v.obtenerInstruccion().toLowerCase()), "Mensaje", JOptionPane.INFORMATION_MESSAGE);
 
 
 
