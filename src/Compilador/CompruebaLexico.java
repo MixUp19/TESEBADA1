@@ -44,10 +44,6 @@ public class CompruebaLexico {
         keywordsAndOperatorsMap.put("'norte'", "atributo");
         keywordsAndOperatorsMap.put("'centro'", "atributo");
         keywordsAndOperatorsMap.put("zona", "atributo");
-
-
-
-
     }
 
     private boolean evaluarToken(String expresionRegular, String token){
@@ -70,10 +66,7 @@ public class CompruebaLexico {
             return "atributo";
         }
         if(evaluarToken("^\\d+$", token)) return "intnum";
-
         if(evaluarToken("^[0-9]+\\.[0-9]+$", token)) return "floatnum";
-
-
         return null;
     }
 }

@@ -49,6 +49,8 @@ public class ManejadorFragmentos {
             }
         }
         return "Consulta Comprobada";
+
+
     }
 
 }
