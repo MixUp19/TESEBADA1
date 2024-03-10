@@ -105,9 +105,9 @@ public class Neo4j extends BD implements AutoCloseable, Runnable{
         //inserto into Clientes(IdCliente,Nombre,Estado,Credito,Deuda) values(13, 'Joaquin', 'Sinaloa', 1000, 700)
         //DELETE FROM Clientes where Nombre = 'Joaquin'
         //update Clientes set Deuda = 3333 where IdCliente = 12
-        String sentenciaDistribuida = "inserto into Clientes(IdCliente,Nombre,Estado,Credito,Deuda) values(1111, 'Ricardo', 'Sinaloa', 1000, 700)";
+        String sentenciaDistribuida = "inserto into Clientes(noCliente,Nombre,Estado,Credito,Deuda) values(1111, 'Ricardo', 'Sinaloa', 1000, 700)";
 
-        Neo4j neo = new Neo4j(sentenciaDistribuida, "25.9.55.242", "VentasC", "neo4j", "emiliano");
+        Neo4j neo = new Neo4j(sentenciaDistribuida, "25.9.55.242", "Ventas", "neo4j", "emiliano");
 
         try {
             neo.ejecutarTransaccion();

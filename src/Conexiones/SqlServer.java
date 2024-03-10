@@ -2,15 +2,15 @@ package src.Conexiones;
 
 import src.Configuracion.ConfiguracionMetodos;
 
-import java.io.ObjectInputFilter;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SqlServer extends BD implements Runnable{
-    private String usuario, password, ip, nombreBaseDeDatos, url, nombreFragmento;
+    private String usuario, password, nombreBaseDeDatos, url;
     private String sentenciaAEjecutar;
     private Connection conexion;
+    private ResultSet resultSet;
     public SqlServer(String sentenciaAEjecutar, String usuario, String password, String ip, String nombreFragmento, String nombreBaseDeDatos) {
         super(ip, nombreFragmento);
         this.usuario = usuario;
@@ -18,11 +18,11 @@ public class SqlServer extends BD implements Runnable{
         this.nombreFragmento = nombreFragmento;
         this.password = password;
         this.nombreBaseDeDatos = nombreBaseDeDatos;
-        url = "jdbc:sqlserver://" + ip + ":1433;" + nombreBaseDeDatos;
+        this.url = "jdbc:sqlserver://" + ip + ":1433; databasename=" + nombreBaseDeDatos+ ";trustServerCertificate=true";
     }
 
     @Override
-    public void crearConexion() throws Exception {
+    public void crearConexion() {
         try {
             conexion = DriverManager.getConnection(url, usuario, password);
         }catch (SQLException e) {
@@ -32,18 +32,13 @@ public class SqlServer extends BD implements Runnable{
     }
 
     @Override
-    public void cerrarConexion() throws Exception {
-        conexion.close();
+    public void cerrarConexion() {
+        try {
+            conexion.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
-
-    /*public static void main(String[] args) {
-        //aqui calar que lo convierta bien
-        SqlServer aux = new SqlServer("","","","Norte","");
-        aux.insert("insert into Clientes(IdCliente, Nombre, Estado, Credito, Deuda) values (12, 'yosef', 'durango', 10000, 5000)");
-        aux.update("update Clientes set nombre = 'yosef' where IdCliente = 23");
-        aux.select("select IdCliente, Nombre, Estado from Clientes where Deuda < 12333");
-        aux.delete("delete Clientes where IdCliente = 1");
-    }*/
 
     public String insert(String query) {
         HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
@@ -70,6 +65,7 @@ public class SqlServer extends BD implements Runnable{
         sqlCodigo += ")";
         return sqlCodigo;
     }
+
     public String delete(String query) {
         HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
         Query q = new Query(query);
@@ -88,7 +84,20 @@ public class SqlServer extends BD implements Runnable{
     }
 
     public static void main(String[] args) {
+        String sentencia = "insert into Clientes(IdCliente, Nombre, Estado, Credito, Deuda) values(10, 'Juan', 'Sinaloa', 200, 200)";
+        SqlServer bd = new SqlServer(sentencia, "sa", "sa", "25.7.117.176","VentasC", "fragmentoSQL");
 
+        try {
+            bd.ejecutarTransaccion();
+            bd.commit();
+        } catch (Exception e) {
+            try {
+                bd.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.out.println(ex.getMessage());
+            }
+        }
     }
 
     public String select(String query) {
@@ -144,13 +153,14 @@ public class SqlServer extends BD implements Runnable{
 
     @Override
     public void rollback() throws Exception {
-        PreparedStatement statement = conexion.prepareStatement("ROLLBACK TRAN");
-        statement.executeUpdate();
+        conexion.rollback();
+        cerrarConexion();
     }
 
     @Override
     public void ejecutarTransaccion() throws Exception {
         String sqlCodigo;
+        boolean isSelect = false;
         if(sentenciaAEjecutar.contains("insert")) {
             sqlCodigo = insert(sentenciaAEjecutar);
         }else if(sentenciaAEjecutar.contains("delete")) {
@@ -158,11 +168,17 @@ public class SqlServer extends BD implements Runnable{
         }else if(sentenciaAEjecutar.contains("update")) {
             sqlCodigo = update(sentenciaAEjecutar);
         }else {
+            isSelect = true;
             sqlCodigo = select(sentenciaAEjecutar);
         }
         crearConexion();
-
-        cerrarConexion();
+        conexion.setAutoCommit(false);
+        PreparedStatement statement = conexion.prepareStatement(sqlCodigo);
+        if(isSelect){
+            resultSet = statement.executeQuery();
+        }else {
+            statement.executeUpdate();
+        }
     }
 
     @Override
@@ -175,26 +191,4 @@ public class SqlServer extends BD implements Runnable{
             System.out.println("Ocurrio un error en el fragmento: " + nombreFragmento);
         }
     }
-    /*public boolean ejecutarTransaccion(String query) {
-        //insert - update - delete - select
-        if(!establecerConexion()) {
-            return false;
-        }
-        String beginTran = "BEGIN TRAN";
-        //que pregunte que es lo que se esta haciendo ya sea select update delete o insert
-        String commitTran = "COMMIT TRAN";
-        cerrarConexion();
-        return true;
-    }
-    public boolean ejecutarConsulta(String query) {
-        //select
-        if(!establecerConexion()) {
-            return false;
-        }
-        //aqui hacer la consulta //probablemente aqui sea lo de devolver el resultSet de la consulta y que
-        //en la vista este el metodo de actualiza la tabla
-        //para no ensuciar este metodo con cosas de la vista
-        cerrarConexion();
-        return true;
-    }*/
 }
