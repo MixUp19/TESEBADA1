@@ -4,18 +4,21 @@ package src.Conexiones;
 import src.archivos.Archivos;
 
 import javax.persistence.*;
+import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*public class ObjectDB extends BD{
-    private String objeto;
-    EntityManager em;
-    EntityManagerFactory emf;
-    public ObjectDB(String ip, String nombreFragmento, String objeto){
+public class ObjectDB extends BD{
+    private String objeto, consultaEjecutar;
+    private EntityManager em;
+    private EntityManagerFactory emf;
+    private String resultadoConsulta;
+    public ObjectDB(String ip, String nombreFragmento, String objeto, String consultaEjecutar){
         super(ip,nombreFragmento);
         this.objeto=objeto;
+        this.consultaEjecutar=reemplazo(consultaEjecutar,obtenerAtributos());
     }
     public static String[] obtenerAtributos(){
         Archivos archivos = new Archivos();
@@ -55,45 +58,6 @@ import java.util.Map;
         }
         return consultaSQL;
     }
-    public static String traducirConsultaSQL(String consultaSQL) {
-        String consultaSQLaux= consultaSQL.toLowerCase();
-        String recurso = StringUtils.substringAfter(consultaSQLaux, "from");
-        recurso = recurso.split(" ")[1];
-        char letra = recurso.charAt(0);
-        recurso = recurso.toUpperCase().charAt(0) + recurso.substring(1).toLowerCase();
-        String condicion="";
-        if(StringUtils.containsIgnoreCase(consultaSQLaux,"where"))
-            condicion= traducirCondicionSQL(consultaSQL, letra);
-        String[] palabras = consultaSQL.split(" ");
-        StringBuilder consultaTraducida = new StringBuilder();
-        if (palabras[0].equalsIgnoreCase("select")) {
-            String atributos = StringUtils.removeStartIgnoreCase(consultaSQL, "select");
-            atributos= atributos.trim();
-            atributos = StringUtils.substring(atributos, 0,StringUtils.indexOfIgnoreCase(atributos, "from"));
-            System.out.println(atributos);
-            String[] atributo;
-            consultaTraducida.append("Select ");
-            if(atributos.contains(",")) {
-                atributo = atributos.split(",");
-                for (String atrib: atributo) {
-                    atrib = letra + "." + atrib.trim();
-                    consultaTraducida.append(atrib).append(", ");
-                }
-                consultaTraducida = new StringBuilder(consultaTraducida.substring(0,consultaTraducida.length()-2));
-            }else
-                consultaTraducida.append(letra);
-            consultaTraducida.append(" from ");
-            consultaTraducida.append(recurso);
-            consultaTraducida.append(" ").append(letra);
-        }
-        if (palabras[0].equalsIgnoreCase("delete")){
-            consultaTraducida.append("delete ");
-            consultaTraducida.append("from ");
-            consultaTraducida.append(recurso).append(" ");
-            consultaTraducida.append(letra);
-        }
-        return consultaTraducida.append(" ").append(condicion).toString().trim();
-    }
     public static String traducirCondicionSQL(String consultaSQL, char letra){
         StringBuilder condicionBuilder = new StringBuilder();
         String condiciones = StringUtils.substring(consultaSQL, StringUtils.indexOfIgnoreCase(consultaSQL, "where"));
@@ -119,11 +83,12 @@ import java.util.Map;
         return  condicionBuilder.toString();
     }
     @Override
-    public void crearConexion() {
+    public void crearConexion() throws PersistenceException{
         Map<String,String> properties = new HashMap<String, String>();
         properties.put("javax.persistence.jdbc.user", "admin");
         properties.put("javax.persistence.jdbc.password", "admin");
         emf = Persistence.createEntityManagerFactory("objectdb://"+ip+":6136/"+objeto+".odb", properties);
+        em = emf.createEntityManager();
     }
     @Override
     public void cerrarConexion(){
@@ -134,20 +99,39 @@ import java.util.Map;
     }
 
     @Override
-    public void select(String consulta) throws PersistenceException{
-        crearConexion();
-        em = emf.createEntityManager();
-        try{
-            em.getTransaction().begin();
-            TypedQuery<Cliente> query = em.createQuery(consulta, Cliente.class);
-            List<Cliente> results = query.getResultList();
-        }catch (PersistenceException ex){
-            throw ex;
-        }
+    public String select(String consulta){
+        String consultaSQLaux= consulta.toLowerCase();
+        String recurso = StringUtils.substringAfter(consultaSQLaux, "from");
+        recurso = recurso.split(" ")[1];
+        char letra = recurso.charAt(0);
+        System.out.println(recurso);
+        recurso = recurso.toUpperCase().charAt(0) + recurso.substring(1).toLowerCase();
+        String condicion="";
+        if(StringUtils.containsIgnoreCase(consultaSQLaux,"where"))
+            condicion= traducirCondicionSQL(consulta, letra);
+        StringBuilder consultaTraducida = new StringBuilder();
+        String atributos = StringUtils.removeStartIgnoreCase(consulta, "select");
+        atributos= atributos.trim();
+        atributos = StringUtils.substring(atributos, 0,StringUtils.indexOfIgnoreCase(atributos, "from"));
+        String[] atributo;
+        consultaTraducida.append("Select ");
+        if(atributos.contains(",")) {
+            atributo = atributos.split(",");
+            for (String atrib: atributo) {
+                atrib = letra + "." + atrib.trim();
+                consultaTraducida.append(atrib).append(", ");
+            }
+            consultaTraducida = new StringBuilder(consultaTraducida.substring(0,consultaTraducida.length()-2));
+        }else
+            consultaTraducida.append(letra);
+        consultaTraducida.append(" from ");
+        consultaTraducida.append(recurso);
+        consultaTraducida.append(" ").append(letra);
+        return consultaTraducida.append(" ").append(condicion).toString().trim();
     }
 
     @Override
-    public void insert(String consulta) throws Exception {
+    public Clientes insert(String consulta){
         consulta = StringUtils.removeStartIgnoreCase(consulta,"insert");
         String campos = StringUtils.substring(consulta, consulta.indexOf('(')+1, consulta.indexOf(')') );
         String datos = StringUtils.substring(consulta, StringUtils.indexOfIgnoreCase(consulta, "values"));
@@ -155,7 +139,7 @@ import java.util.Map;
         datos= datos.replace("(","").replace(")","");
         String[] campo = campos.split(",");
         String[] dato = datos.split(",");
-        Cliente c = new Cliente();
+        Clientes c = new Clientes();
         for (int i = 0; i < campo.length; i++) {
             switch (campo[i].trim()){
                 case "idCliente":{
@@ -175,17 +159,84 @@ import java.util.Map;
                     break; }
             }
         }
-        em.persist(c);
+        return c;
     }
 
     @Override
-    public void update(String consulta) throws Exception {
-        consulta = traducirConsultaSQL(consulta);
+    public String update(String consulta)  {
+        String[] partes = consulta.split(" ");
+        StringBuilder constructor = new StringBuilder();
+        for (int i = 0; i < partes.length; i++) {
+            if (i==1)
+                partes[i]= partes[1].toUpperCase().charAt(0)+partes[1].toLowerCase().substring(1, partes[1].length());
+            constructor.append(partes[i]).append(" ");
+        }
+        return constructor.toString().trim();
+    }
+
+    @Override
+    public String delete(String consulta) {
+        String consultaSQLaux= consulta.toLowerCase();
+        String recurso = StringUtils.substringAfter(consultaSQLaux, "from");
+        recurso = recurso.split(" ")[1];
+        char letra = recurso.charAt(0);
+        recurso = recurso.toUpperCase().charAt(0) + recurso.substring(1).toLowerCase();
+        String condicion="";
+        if(StringUtils.containsIgnoreCase(consultaSQLaux,"where"))
+            condicion= traducirCondicionSQL(consulta, letra);
+        StringBuilder consultaTraducida = new StringBuilder();
+            consultaTraducida.append("delete ");
+            consultaTraducida.append("from ");
+            consultaTraducida.append(recurso).append(" ");
+            consultaTraducida.append(letra);
+        return consultaTraducida.append(" ").append(condicion).toString().trim();
+    }
+
+    @Override
+    public void commit() throws PersistenceException {
+        em.getTransaction().commit();
+    }
+
+    @Override
+    public void rollback() throws Exception {
 
     }
 
     @Override
-    public void delete(String consulta) throws Exception {
-
+    public void ejecutarTransaccion(){
+        String consulta;
+        try {
+            crearConexion();
+            em.getTransaction().begin();
+            if(StringUtils.containsIgnoreCase(consultaEjecutar, "select")){
+                consulta = this.select(consultaEjecutar);
+                TypedQuery<Object> query= em.createQuery(consulta, Object.class);
+                List<Object> resultado = query.getResultList();
+                mostrarConsulta(resultado);
+                return;
+            }
+            if(StringUtils.containsIgnoreCase(consultaEjecutar, "update")){
+                Query query = em.createQuery(update(consultaEjecutar));
+                query.executeUpdate();
+                return;
+            }
+            if(StringUtils.containsIgnoreCase(consultaEjecutar, "delete")){
+                consulta = this.delete(consultaEjecutar);
+                Query query = em.createQuery(consulta);
+                query.executeUpdate();
+                return;
+            }
+            if (StringUtils.containsIgnoreCase(consultaEjecutar, "insert")){
+                Clientes c= insert(consultaEjecutar);
+                em.persist(c);
+            }
+        }catch (PersistenceException ex){
+            System.out.println(ex.getMessage());
+        }
     }
-}*/
+    public void mostrarConsulta(List<Object> resultado){
+        for (Object objeto: resultado) {
+            System.out.println(objeto);
+        }
+    }
+}

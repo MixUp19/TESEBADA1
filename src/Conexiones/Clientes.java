@@ -1,13 +1,17 @@
 package src.Conexiones;
 
-public class Cliente {
+import javax.persistence.Entity;
+import java.io.Serializable;
+@Entity
+public class Clientes implements Serializable {
+    private static final long serialVersionUID = 1L;
     int idCliente;
     String nombre;
     String estado;
     double credito;
     double deuda;
 
-    public Cliente(){
+    public Clientes(){
 
     }
 
