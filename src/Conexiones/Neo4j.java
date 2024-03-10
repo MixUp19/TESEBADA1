@@ -26,7 +26,7 @@ public class Neo4j extends BD implements AutoCloseable{
     }
 
     @Override
-    public void select(String consulta) throws Exception {
+    public String select(String consulta){
         HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
 
         String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
@@ -60,6 +60,7 @@ public class Neo4j extends BD implements AutoCloseable{
         //mandar a llamar con la transaccion
         //aca abajo el return
         //MATCH (n:Clientes) WHERE n.edad = 12 and n.nombre = 'Yosef' RETURN n si es * o cada uno de los atributos
+        return cipherCodigo;
     }
 
     /*public static void selectdos(String consulta, String nombreFragmento) {
@@ -122,7 +123,7 @@ public class Neo4j extends BD implements AutoCloseable{
     }*/
 
     @Override
-    public void insert(String consulta) throws Exception {
+    public String insert(String consulta) {
         Query q = new Query(consulta);
         String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
         String cipherCodigo = "CREATE (n:" + nombreTabla + " {";
@@ -136,6 +137,7 @@ public class Neo4j extends BD implements AutoCloseable{
             cipherCodigo += atributos.get(i) + ":" + expresiones.get(i);
         }
         cipherCodigo += "})";
+        return cipherCodigo;
     }
 
     /*public static void updateDos(String consulta,String nombreFragmento) {
@@ -158,7 +160,7 @@ public class Neo4j extends BD implements AutoCloseable{
     }*/
 
     @Override
-    public void update(String consulta) throws Exception {
+    public String update(String consulta) {
         HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
         Query q = new Query(consulta);
         String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
@@ -174,6 +176,7 @@ public class Neo4j extends BD implements AutoCloseable{
         ArrayList<String> atributos = q.getAtributosUsados();
         ArrayList<String> expresiones = q.getExpresiones();
         cipherCodigo += "SET n." + mapeo.get(atributos.get(0)) + " = " + expresiones.get(0);
+        return cipherCodigo;
     }
 
     /*public static void deleteDos(String consulta, String nombreFragmento) {
@@ -194,7 +197,7 @@ public class Neo4j extends BD implements AutoCloseable{
     }*/
 
     @Override
-    public void delete(String consulta) throws Exception {
+    public String delete(String consulta) {
         HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
         Query q = new Query(consulta);
         String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
@@ -208,6 +211,7 @@ public class Neo4j extends BD implements AutoCloseable{
             }
         }
         cipherCodigo += "DELETE n";
+        return cipherCodigo;
     }
 
     @Override
@@ -221,7 +225,7 @@ public class Neo4j extends BD implements AutoCloseable{
     }
 
     @Override
-    public void ejecutarTransaccion() throws Exception {
+    public void ejecutarTransaccion() {
         //aqui es donde van a abrir la transaccion pero no van a hacer el commit
     }
 

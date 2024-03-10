@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 
 import org.apache.commons.lang3.StringUtils;
-import src.Conexiones.Cliente;
+import src.Conexiones.Clientes;
 import src.archivos.Archivos;
 
 public class TraductorObject {
@@ -129,7 +129,7 @@ public class TraductorObject {
         datos= datos.replace("(","").replace(")","");
         String[] campo = campos.split(",");
         String[] dato = datos.split(",");
-        Cliente c = new Cliente();
+        Clientes c = new Clientes();
         for (int i = 0; i < campo.length; i++) {
             switch (campo[i].trim()){
                 case "idCliente":{

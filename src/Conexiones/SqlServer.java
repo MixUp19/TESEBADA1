@@ -23,7 +23,7 @@ public class SqlServer extends BD{
     }
 
     @Override
-    public void crearConexion() throws Exception {
+    public void crearConexion() throws Exception{
         try {
             conexion = DriverManager.getConnection(url, usuario, password);
         }catch (SQLException e) {
@@ -46,7 +46,7 @@ public class SqlServer extends BD{
         aux.delete("delete Clientes where IdCliente = 1");
     }
 
-    public void insert(String query) {
+    public String insert(String query) {
         HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
         Query q = new Query(query);
         String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
@@ -69,9 +69,9 @@ public class SqlServer extends BD{
             sqlCodigo += expresiones.get(i);
         }
         sqlCodigo += ")";
-        System.out.println(sqlCodigo);
+        return sqlCodigo;
     }
-    public void delete(String query) {
+    public String delete(String query) {
         HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
         Query q = new Query(query);
         String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
@@ -85,7 +85,7 @@ public class SqlServer extends BD{
                 sqlCodigo += condicion[i];
             }
         }
-        System.out.println(sqlCodigo);
+        return sqlCodigo;
     }
 
     @Override
@@ -99,11 +99,11 @@ public class SqlServer extends BD{
     }
 
     @Override
-    public void ejecutarTransaccion() throws Exception {
+    public void ejecutarTransaccion() {
 
     }
 
-    public void select(String query) {
+    public String select(String query) {
         Query q = new Query(query);
         String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
         HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
@@ -129,9 +129,9 @@ public class SqlServer extends BD{
                 sqlCodigo += cond;
             }
         }
-        System.out.println(sqlCodigo);
+        return sqlCodigo;
     }
-    public void update(String query) {
+    public String update(String query) {
         HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
         Query q = new Query(query);
         String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
@@ -145,7 +145,7 @@ public class SqlServer extends BD{
             }
             sqlCodigo += str + " ";
         }
-        System.out.println(sqlCodigo);
+        return sqlCodigo;
     }
     /*public boolean ejecutarTransaccion(String query) {
         //insert - update - delete - select
