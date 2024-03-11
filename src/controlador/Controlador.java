@@ -32,6 +32,9 @@ public class Controlador implements ActionListener {
         if(e.getSource()== menuPantalla.getItemMapaAtributo()){
             menuPantalla.anadirPanel(new PanMapeoAtr());
         }
+        if(e.getSource()==menuPantalla.getItemParticionar()){
+            menuPantalla.anadirPanel(new ParticionarVista());
+        }
         if(e.getSource()== menuPantalla.getItemSalir()){
             System.exit(0);
         }

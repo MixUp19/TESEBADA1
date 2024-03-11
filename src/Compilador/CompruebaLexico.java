@@ -5,9 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CompruebaLexico {
-
     private HashMap<String, String> keywordsAndOperatorsMap;
-
     public CompruebaLexico() {
         this.keywordsAndOperatorsMap = new HashMap<String, String>();
         keywordsAndOperatorsMap.put("select", "prSelect");
@@ -37,14 +35,16 @@ public class CompruebaLexico {
         keywordsAndOperatorsMap.put("clientes", "tabla");
         keywordsAndOperatorsMap.put("idcliente", "atributo");
         keywordsAndOperatorsMap.put("nombre", "atributo");
-        keywordsAndOperatorsMap.put("nombreEstado", "atributo");
+        keywordsAndOperatorsMap.put("estado", "atributo");
         keywordsAndOperatorsMap.put("credito", "atributo");
         keywordsAndOperatorsMap.put("deuda", "atributo");
         keywordsAndOperatorsMap.put("'sur'", "atributo");
         keywordsAndOperatorsMap.put("'norte'", "atributo");
         keywordsAndOperatorsMap.put("'centro'", "atributo");
         keywordsAndOperatorsMap.put("zona", "atributo");
+
     }
+
 
     private boolean evaluarToken(String expresionRegular, String token){
         Pattern pattern = Pattern.compile(expresionRegular, Pattern.UNICODE_CASE);
@@ -53,20 +53,26 @@ public class CompruebaLexico {
     }
 
     public String analizadorDeTokens(String token){
+        String atributos[] = null;
         if(keywordsAndOperatorsMap.containsKey(token)){
             return keywordsAndOperatorsMap.get(token);
         }
         if (token.contains(",")) {
-            String[] atributos = token.split(",");
+            atributos = token.split(",");
             for (String atributo : atributos) {
                 if (!keywordsAndOperatorsMap.containsKey(atributo.trim())) {
-                    return null;
+                    for (int i = 0; i < atributos.length; i++) {
+                        if (atributos[0].startsWith("´") && atributos[0].endsWith("´")) {
+                            return token.substring(1, token.length() - 1);
+                        }
+                    }
                 }
             }
-            return "atributo";
         }
         if(evaluarToken("^\\d+$", token)) return "intnum";
         if(evaluarToken("^[0-9]+\\.[0-9]+$", token)) return "floatnum";
-        return null;
+
+        return "otro tipo de token";
+
     }
 }

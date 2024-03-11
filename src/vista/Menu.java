@@ -13,6 +13,7 @@ public class Menu extends JFrame {
     private JMenuItem itemSalir;
     private JMenuItem itemMapaAtributo;
     private JMenuItem itemConfigTablaDist;
+    private JMenuItem itemParticionar;
 
 
     public Menu() {
@@ -43,12 +44,15 @@ public class Menu extends JFrame {
         itemConsulta = new JMenuItem("Consulta");
         itemSalir = new JMenuItem("Salir");
         itemMapaAtributo = new JMenuItem("Mapeo de Atributos");
+        itemParticionar= new JMenuItem("Particionar");
         opciones.add(itemConfigTablaDist);
         opciones.add(itemConfiguracion);
         opciones.add(itemMapaAtributo);
         opciones.add(itemTransaccion);
         opciones.add(itemConsulta);
+        opciones.add(itemParticionar);
         opciones.add(itemSalir);
+
         menu.add(opciones);
         add(menu, BorderLayout.NORTH);
 
@@ -61,6 +65,7 @@ public class Menu extends JFrame {
         itemTransaccion.addActionListener(c);
         itemConsulta.addActionListener(c);
         itemSalir.addActionListener(c);
+        itemParticionar.addActionListener(c);
     }
     public void anadirPanel(JPanel panel){
         getContentPane().removeAll();
@@ -87,4 +92,5 @@ public class Menu extends JFrame {
     public JMenuItem getItemMapaAtributo(){
         return itemMapaAtributo;
     }
+    public JMenuItem getItemParticionar(){return  itemParticionar}
 }

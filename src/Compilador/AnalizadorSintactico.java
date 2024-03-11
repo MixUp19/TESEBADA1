@@ -9,7 +9,7 @@ public class AnalizadorSintactico {
     private Vector<String> tokens;
     private int indiceActual;
     private String errorSintactico;
-    private String todosLosTokensString, armandoEstructura;
+    private String armandoEstructura;
 
     public AnalizadorSintactico(Vector<String> tokens) {
         this.tokens = tokens;
@@ -28,7 +28,6 @@ public class AnalizadorSintactico {
 
     private void analizarSentencia() {
     	String tokenActual = tokens.elementAt(indiceActual);
-
     	if (esSelectStatement()) {
     		return;
     	} 
@@ -38,7 +37,6 @@ public class AnalizadorSintactico {
     	if (esUpdateStatement()) {
     		return;
     	}
-
     	if (esDeleteStatement()) {
     	}
 }
@@ -64,7 +62,7 @@ public class AnalizadorSintactico {
     private boolean esInsertStatement() {
         boolean band = false;
         // INSERT INTO ... VALUES ...
-        if (evaluarTxt("^INSERT INTO.*VALUES.*", armandoEstructura)) {
+        if (evaluarTxt("^INSERT.*INTO.*VALUES.*", armandoEstructura)) {
             band = true;
         }
         return band;

@@ -53,35 +53,6 @@ public class Query {
         }
     }
 
-    /*public static void main(String[] args) {
-        //Query q = new Query("select * from clientes where IdCliente > 17 and Nombre = 'yosef'");
-        //q.obtenerAtributosCondicion();
-        String x = "select * from Clientes where Nombre <> 'yosef' or IdCliente > 2";
-        //String x = "update Clientes set nombre = 'yosef' where IdCliente = 2 and Credito <> 2300";
-        Query q = new Query(x);
-        System.out.println("Atributos usados en la condicion");
-        for(String cadena : q.getAtributosCondicion()) {
-            System.out.println(cadena);
-        }
-        System.out.println("-------------------------");
-        System.out.println("Atributos usados en la seleccion de columnas");
-        for(String cadena : q.getAtributosUsados()) {
-            System.out.println(cadena);
-        }
-        System.out.println("------------------------------");
-        System.out.println("Condicion de la sentencia: " + q.getCondicion());
-
-        //String xx = "inserto into clientes (x,x,x,x) values(y,y,y,y)";
-        String xx = "update Clientes set nombre = 'yosef'";
-        Query w = new Query(xx);
-        for(String y : w.getExpresiones()) {
-            System.out.println(y);
-        }
-        for(Integer ww : w.getCondicionBoolean()) {
-            System.out.print(ww + " ");
-        }
-        System.out.println();
-    }*/
 
     public void obtenerAtributosUsados() {
         String[] consultaArr = consulta.split(" ");
