@@ -1,5 +1,5 @@
 Clientes-Ventas-VentasC-VentasN
-IdCliente-noCliente,IdCliente,idCliente
+IdCliente-IdCliente,IdCliente,idCliente
 Nombre-Nombre,Nombre,nombre
 Estado-Estado,Estado,estado
 Credito-Credito,Credito,credito

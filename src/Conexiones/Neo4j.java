@@ -1,10 +1,12 @@
 package src.Conexiones;
 
 import org.neo4j.driver.*;
+import org.neo4j.driver.Record;
 import src.Configuracion.ConfiguracionMetodos;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Neo4j extends BD implements AutoCloseable, Runnable{
     private Driver driver;
@@ -12,11 +14,14 @@ public class Neo4j extends BD implements AutoCloseable, Runnable{
     private String user, password;
     private String sentenciaAEjecutar;
     private Transaction transaccion;
+    private EagerResult result;
+    private ArrayList<ArrayList<String>> resultado;
     public Neo4j(String sentenciaAEjecutar, String ip, String nombreFragmento, String user, String password) {
         super(ip, nombreFragmento);
         this.user = user;
         this.sentenciaAEjecutar = sentenciaAEjecutar;
         this.password = password;
+        this.resultado = new ArrayList<>();
     }
 
     @Override
@@ -62,43 +67,20 @@ public class Neo4j extends BD implements AutoCloseable, Runnable{
                 cipherCodigo += "n." + mapeo.get(atributosRequeridos.get(i));
             }
         }else {
-            cipherCodigo += "n";
+            //debes mapear todos saca los atributos
+            ArrayList<String> todosLosAtributos = ConfiguracionMetodos.obtenerTodosLosAtributos(nombreFragmento);
+            for(int i = 0; i < todosLosAtributos.size(); i++) {
+                if(i < todosLosAtributos.size()-1) {
+                    cipherCodigo += "n." + mapeo.get(todosLosAtributos.get(i)) + ",";
+                    continue;
+                }
+                cipherCodigo += "n." + mapeo.get(todosLosAtributos.get(i));
+            }
         }
 
         return cipherCodigo;
     }
 
-    /*public static void selectdos(String consulta, String nombreFragmento) {
-        HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
-
-        String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
-
-        Query q = new Query(consulta);
-
-        String cipherCodigo = "MATCH (n:" + nombreTabla + ") ";
-        String[] condicion = q.getCondicion().split(" ");
-        for(String str : condicion) {
-            if(mapeo.containsKey(str)) {
-                cipherCodigo += "n." + mapeo.get(str) + " ";
-            }else {
-                cipherCodigo += str + " ";
-            }
-        }
-        ArrayList<String> atributosRequeridos = q.getAtributosUsados();
-        cipherCodigo += "RETURN ";
-        if(!atributosRequeridos.get(0).equals("*")) {
-            for(int i = 0; i < atributosRequeridos.size(); i++) {
-                if(i < atributosRequeridos.size()-1) {
-                    cipherCodigo += "n." + mapeo.get(atributosRequeridos.get(i)) + ",";
-                    continue;
-                }
-                cipherCodigo += "n." + mapeo.get(atributosRequeridos.get(i));
-            }
-        }else {
-            cipherCodigo += "n";
-        }
-        System.out.println(cipherCodigo);
-    }*/
 
     public static void main(String[] args) {
 
@@ -122,23 +104,6 @@ public class Neo4j extends BD implements AutoCloseable, Runnable{
         }
     }
 
-    /*public static void insertDos(String consulta,String nombreFragmento) {
-        Query q = new Query(consulta);
-        String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
-        String cipherCodigo = "CREATE (n:" + nombreTabla + " {";
-        ArrayList<String> atributos = q.getAtributosUsados();
-        ArrayList<String> expresiones = q.getExpresiones();
-        for(int i = 0; i < atributos.size(); i++) {
-            if(i < atributos.size()-1) {
-                cipherCodigo += atributos.get(i) + ":" + expresiones.get(i) + ",";
-                continue;
-            }
-            cipherCodigo += atributos.get(i) + ":" + expresiones.get(i);
-        }
-        cipherCodigo += "})";
-        System.out.println(cipherCodigo);
-    }*/
-
     @Override
     public String insert(String consulta) {
         Query q = new Query(consulta);
@@ -157,25 +122,6 @@ public class Neo4j extends BD implements AutoCloseable, Runnable{
 
         return cipherCodigo;
     }
-
-    /*public static void updateDos(String consulta,String nombreFragmento) {
-        HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
-        Query q = new Query(consulta);
-        String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
-        String cipherCodigo = "MATCH (n:" + nombreTabla + ") ";
-        String[] condicion = q.getCondicion().split(" ");
-        for(String str : condicion) {
-            if(mapeo.containsKey(str)) {
-                cipherCodigo += "n." + mapeo.get(str) + " ";
-            }else {
-                cipherCodigo += str + " ";
-            }
-        }
-        ArrayList<String> atributos = q.getAtributosUsados();
-        ArrayList<String> expresiones = q.getExpresiones();
-        cipherCodigo += "SET n." + mapeo.get(atributos.get(0)) + " = " + expresiones.get(0);
-        System.out.println(cipherCodigo);
-    }*/
 
     @Override
     public String update(String consulta) {
@@ -198,22 +144,6 @@ public class Neo4j extends BD implements AutoCloseable, Runnable{
         return cipherCodigo;
     }
 
-    /*public static void deleteDos(String consulta, String nombreFragmento) {
-        HashMap<String,String> mapeo = ConfiguracionMetodos.mapearAtributos(nombreFragmento);
-        Query q = new Query(consulta);
-        String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
-        String cipherCodigo = "MATCH (n:" + nombreTabla + ") ";
-        String[] condicion = q.getCondicion().split(" ");
-        for(String str : condicion) {
-            if(mapeo.containsKey(str)) {
-                cipherCodigo += "n." + mapeo.get(str) + " ";
-            }else {
-                cipherCodigo += str + " ";
-            }
-        }
-        cipherCodigo += "DELETE n";
-        System.out.println(cipherCodigo);
-    }*/
 
     @Override
     public String delete(String consulta) {
@@ -249,11 +179,13 @@ public class Neo4j extends BD implements AutoCloseable, Runnable{
     @Override
     public void ejecutarTransaccion() throws Exception {
         String cipherCodigo;
+        boolean isSelect = false;
         if(sentenciaAEjecutar.contains("insert")) {
             cipherCodigo = insert(sentenciaAEjecutar);
         }else if(sentenciaAEjecutar.contains("update")) {
             cipherCodigo = update(sentenciaAEjecutar);
         }else if(sentenciaAEjecutar.contains("select")) {
+            isSelect = true;
             cipherCodigo = select(sentenciaAEjecutar);
         }else {
             cipherCodigo = delete(sentenciaAEjecutar);
@@ -262,7 +194,35 @@ public class Neo4j extends BD implements AutoCloseable, Runnable{
         crearConexion();
         sesion = driver.session(SessionConfig.builder().withDatabase("neo4j").build());
         transaccion = sesion.beginTransaction();
-        transaccion.run(cipherCodigo);
+        System.out.println(transaccion+" ejecutar");
+        if(isSelect) {
+            result = driver.executableQuery(cipherCodigo).execute();
+            obtenerSelect();
+        }else {
+            transaccion.run(cipherCodigo);
+        }
+    }
+
+    @Override
+    public ArrayList<ArrayList<String>> getResultadoConsulta() {
+        return resultado;
+    }
+
+    public void obtenerSelect() {
+        List<Record> records = result.records();
+        for(int i = 0; i < records.size(); i++) {
+            ArrayList<String> aux = new ArrayList<>();
+            for(int j = 0; j < records.get(0).size(); j++) {
+                aux.add(records.get(i).get(j).toString());
+            }
+            resultado.add(aux);
+        }
+        for(int i = 0; i < resultado.size(); i++) {
+            for(int j = 0; j < resultado.get(0).size(); j++) {
+                System.out.print(resultado.get(i).get(j) + " ");
+            }
+            System.out.println();
+        }
     }
 
     @Override
@@ -274,11 +234,14 @@ public class Neo4j extends BD implements AutoCloseable, Runnable{
     public void run() {
         try {
             ejecutarTransaccion();
-            TERMINADO = true;
-            cerrarConexion();
+            this.terminado = true;
         } catch (Exception e) {
-            TERMINADO = false;
-            cerrarConexion();
+            e.printStackTrace();
+            this.terminado = false;
         }
+    }
+
+    public ArrayList<ArrayList<String>> getResultado() {
+        return resultado;
     }
 }

@@ -14,10 +14,12 @@ public class ObjectDB extends BD{
     private String objeto, consultaEjecutar;
     private EntityManager em;
     private EntityManagerFactory emf;
-    private String resultadoConsulta;
-    public ObjectDB(String ip, String nombreFragmento, String objeto){
+    private ArrayList<ArrayList<String>> resultadoConsulta;
+    public ObjectDB(String ip, String nombreFragmento, String objeto, String consultaEjecutar){
         super(ip,nombreFragmento);
         this.objeto=objeto;
+        resultadoConsulta = new ArrayList<ArrayList<String>>();
+        this.consultaEjecutar = consultaEjecutar;
         this.consultaEjecutar=reemplazo(consultaEjecutar,obtenerAtributos());
     }
     public static String[] obtenerAtributos(){
@@ -195,17 +197,20 @@ public class ObjectDB extends BD{
     @Override
     public void commit() throws PersistenceException {
         em.getTransaction().commit();
+        cerrarConexion();
     }
 
     @Override
     public void rollback() throws Exception {
-
+        em.getTransaction().rollback();
+        cerrarConexion();
     }
 
     @Override
-    public void ejecutarTransaccion(){
+    public void ejecutarTransaccion() throws Exception{
         String consulta;
-        try {
+        System.out.println("Object transaccion");
+
             crearConexion();
             em.getTransaction().begin();
             if(StringUtils.containsIgnoreCase(consultaEjecutar, "select")){
@@ -230,13 +235,48 @@ public class ObjectDB extends BD{
                 Clientes c= insert(consultaEjecutar);
                 em.persist(c);
             }
-        }catch (PersistenceException ex){
-            System.out.println(ex.getMessage());
-        }
     }
     public void mostrarConsulta(List<Object> resultado){
         for (Object objeto: resultado) {
-            System.out.println(objeto);
+            ArrayList<String> fila = new ArrayList<>();
+            if(objeto instanceof Object[]){
+                Object[] aux = (Object[])objeto;
+                for (Object re: aux) {
+                    fila.add(re.toString());
+                }
+            }else
+            if(objeto instanceof Clientes){
+               Clientes aux = (Clientes) objeto;
+               fila.add(aux.getIdCliente()+"");
+               fila.add(aux.getNombre());
+               fila.add(aux.getEstado());
+               fila.add(aux.getCredito()+"");
+               fila.add(aux.getDeuda()+"");
+            }else{
+                fila.add(objeto.toString());
+            }
+            resultadoConsulta.add(fila);
+        }
+        for (ArrayList fila : resultadoConsulta) {
+            for (Object columna:fila) {
+                System.out.print("["+columna+"]");
+            }
+        }
+    }
+
+    public ArrayList<ArrayList<String>> getResultadoConsulta() {
+        return resultadoConsulta;
+    }
+
+    @Override
+    public void run() {
+        try {
+            ejecutarTransaccion();
+            terminado=true;
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            System.out.println(terminado);
+            terminado= false;
         }
     }
 }

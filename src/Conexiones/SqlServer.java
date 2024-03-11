@@ -7,18 +7,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SqlServer extends BD implements Runnable{
-    private String usuario, password, nombreBaseDeDatos, url;
+    private final String usuario;
+    private final String password;
+    private String nombreBaseDeDatos;
+    private String url;
     private String sentenciaAEjecutar;
     private Connection conexion;
     private ResultSet resultSet;
+    private ArrayList<ArrayList<String>> resultado;
     public SqlServer(String sentenciaAEjecutar, String usuario, String password, String ip, String nombreFragmento, String nombreBaseDeDatos) {
         super(ip, nombreFragmento);
         this.usuario = usuario;
         this.sentenciaAEjecutar = sentenciaAEjecutar;
         this.nombreFragmento = nombreFragmento;
         this.password = password;
+        this.resultado = new ArrayList<>();
         this.nombreBaseDeDatos = nombreBaseDeDatos;
         this.url = "jdbc:sqlserver://" + ip + ":1433; databasename=" + nombreBaseDeDatos+ ";trustServerCertificate=true";
+    }
+
+    @Override
+    public ArrayList<ArrayList<String>> getResultadoConsulta() {
+        return resultado;
     }
 
     @Override
@@ -176,8 +186,26 @@ public class SqlServer extends BD implements Runnable{
         PreparedStatement statement = conexion.prepareStatement(sqlCodigo);
         if(isSelect){
             resultSet = statement.executeQuery();
+            obtenerResultado();
         }else {
             statement.executeUpdate();
+        }
+    }
+
+    public void obtenerResultado() {
+        try {
+            ResultSetMetaData metaDataDeConsulta = resultSet.getMetaData();
+            int columnas = metaDataDeConsulta.getColumnCount();
+            while(resultSet.next()) {
+                ArrayList<String> aux = new ArrayList<>();
+                for(int i = 1; i <= columnas; i++) {
+                    aux.add(resultSet.getObject(i).toString());
+                }
+                resultado.add(aux);
+            }
+        }catch(SQLException e) {
+            e.printStackTrace();
+            System.out.println("Ocurrio un error");
         }
     }
 
@@ -185,9 +213,10 @@ public class SqlServer extends BD implements Runnable{
     public void run() {
         try {
             ejecutarTransaccion();
-            this.TERMINADO = true;
+            this.terminado = true;
         } catch (Exception e) {
-            this.TERMINADO = false;
+            this.terminado = false;
+            e.printStackTrace();
             System.out.println("Ocurrio un error en el fragmento: " + nombreFragmento);
         }
     }

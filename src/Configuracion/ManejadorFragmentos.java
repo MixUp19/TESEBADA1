@@ -1,5 +1,6 @@
 package src.Configuracion;
 
+import io.netty.util.internal.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import src.Conexiones.BD;
 import src.Conexiones.Neo4j;
@@ -17,8 +18,9 @@ import java.util.HashMap;
 public class ManejadorFragmentos {
     private final HashMap<Object, Object> fragmentos;
     private final Object[][] info;
-    private boolean continuar;
+    private boolean continuar, bandera;
     private final ArrayList<String> destinos;
+    private ArrayList<BD> fragmentosInvolucrados;
     private String zonas;
 
     public ManejadorFragmentos() {
@@ -28,10 +30,26 @@ public class ManejadorFragmentos {
         info = arch.cargarConfiguracionFragmentos();
         info();
     }
-    public static void main(String[] arg){
-        ManejadorFragmentos m = new ManejadorFragmentos();
-        System.out.println(m.verificadorZonaActiva("Select * from clientes where nombre = 'Jorge' and zona = 'norte' and zona = 'sur'"));
+
+    public boolean isContinuar() {
+        return continuar;
     }
+
+    public String[] obtenerAtributos(String consulta){
+        if(consulta.contains("*")){
+            Archivos a = new Archivos();
+            String linea = a.cargarConfiguracionTablaDist()[1];
+            return linea.split(",");
+        }
+        consulta = StringUtils.substringBefore(consulta, "from");
+        consulta = StringUtils.replaceIgnoreCase(consulta, "select","");
+        return consulta.split(",");
+    }
+
+   /*public static void main(String[] arg){
+        ManejadorFragmentos m = new ManejadorFragmentos();
+        System.out.println(m.verificadorZonaActiva("insert into clientes (idCliente, nombre, estado, credito, deuda, zona) values (10, 'Jorge', 'Sinaloa',200,200, 'Norte')"));
+   }*/
 
     private void info() {
         for (Object[] objects : info) {
@@ -47,18 +65,25 @@ public class ManejadorFragmentos {
         String[] dato = datos.split(",");
         for (int i = 0; i < atributo.length; i++) {
             if (atributo[i].trim().equalsIgnoreCase("zona")){
-                destinos.add(dato[i].replace("'","").trim());
-                consulta = StringUtils.removeIgnoreCase(consulta, "zona");
                 consulta = StringUtils.removeIgnoreCase(consulta, dato[i].trim());
+                dato[i]= dato[i].replace("'","").trim();
+                dato[i] = dato[i].toUpperCase().charAt(0)+ dato[i].substring(1 );
+                System.out.println(dato[i]);
+                if (fragmentos.get(dato[i]).equals("Inactivo")){
+                    return "Zona '"+dato[i] +"' inactiva";
+                }
+                destinos.add(dato[i]);
+                consulta = StringUtils.removeIgnoreCase(consulta, "zona");
                 consulta = consulta.replaceAll(",\\)", ")");
                 consulta = consulta.replaceAll(", \\)", ")");
-                System.out.println(consulta);
             }
         }
+        continuar =true;
         return consulta;
     }
 
     public String verificadorZonaActiva(String consulta) {
+        destinos.clear();
         if(StringUtils.containsIgnoreCase(consulta, "insert")){
             return comprobarInsert(consulta);
         }
@@ -66,12 +91,17 @@ public class ManejadorFragmentos {
             for (Object fragmento :fragmentos.keySet()) {
                 if("Inactivo".equalsIgnoreCase(fragmentos.get(fragmento).toString())){
                     continuar= false;
-                    return consulta;
+                    return "No están todas la zonas activas";
                 }
                 destinos.add(fragmento.toString());
             }
         }
-        String[] partes = consulta.split("zona");
+        int tieneWhere =StringUtils.indexOfIgnoreCase(consulta, "where");
+        if (tieneWhere==-1) {
+            continuar= true;
+            return consulta;
+        }
+        String[] partes = consulta.substring(tieneWhere).split("zona");
         consulta = consulta.replaceAll("zona=", "");
         consulta = consulta.replaceAll("zona =", "");
         for (int i = 1; i < partes.length; i++) {
@@ -113,39 +143,112 @@ public class ManejadorFragmentos {
         if (StringUtils.endsWithIgnoreCase(consulta, "or")) {
             consulta = consulta.substring(0, consulta.length() - 2);
         }
+
+        int posicionInvalido = StringUtils.indexOfIgnoreCase(consulta,"where and");
+        if (posicionInvalido != -1) {
+            consulta = consulta.substring(0, posicionInvalido+5) +
+                    consulta.substring(posicionInvalido + "where and".length() );
+        }
+        posicionInvalido = StringUtils.indexOfIgnoreCase(consulta,"where or");
+        if (posicionInvalido != -1) {
+            consulta = consulta.substring(0, posicionInvalido+5) +
+                    consulta.substring(posicionInvalido + "where or".length() );
+        }
+        consulta = consulta.trim();
+        if (StringUtils.endsWithIgnoreCase(consulta, "where")) {
+            consulta = consulta.substring(0, consulta.length() - 5);
+        }
         consulta = consulta.trim();
         return consulta;
     }
-
-    public ArrayList<BD> obtenerFragmentosRequeridos() {
-        ArrayList<BD> fragmentos = new ArrayList<>();
+    public boolean contiene(String cadena){
+        for (String destino: destinos) {
+            if(destino.equalsIgnoreCase(cadena)){
+                System.out.println(destino+", "+ cadena);
+                return true;
+            }
+        }
+        return false;
+    }
+    public ArrayList<BD> obtenerFragmentosRequeridos(String consulta) {
+        fragmentosInvolucrados = new ArrayList<>();
         Archivos archivo = new Archivos();
         Object[][] configuracion = archivo.cargarConfiguracionFragmentos();
-        for(int i = 1; i < configuracion.length; i++) {
-            if(destinos.contains(configuracion[i][4].toString())) {
+        for(int i = 0; i < configuracion.length; i++) {
+            if(contiene(configuracion[i][4].toString())){
                 if(configuracion[i][2].toString().equalsIgnoreCase("neo4j")) {
-                    fragmentos.add(new Neo4j(configuracion[i][1].toString(),configuracion[i][0].toString(),"neo4j", "emiliano"));
+                    fragmentosInvolucrados.add(new Neo4j(consulta, configuracion[i][1].toString(),configuracion[i][0].toString(),"neo4j", "emiliano"));
                 }else if(configuracion[i][2].toString().equalsIgnoreCase("sql")) {
-                    fragmentos.add(new SqlServer("sa","sa",configuracion[i][1].toString(), configuracion[i][0].toString(), "fragmentoSQL"));
+                    fragmentosInvolucrados.add(new SqlServer(consulta, "sa","sa",configuracion[i][1].toString(), configuracion[i][0].toString(), "fragmentoSQL"));
                 }else {
-                    //objectdb
-                    fragmentos.add(new ObjectDB(configuracion[i][1].toString(),"",configuracion[i][3].toString()));
+                    fragmentosInvolucrados.add(new ObjectDB(configuracion[i][1].toString(),"",configuracion[i][3].toString(), consulta));
                 }
             }
         }
-        return fragmentos;
+        return fragmentosInvolucrados;
     }
 
-    public void ejecutarConsulta() {
-        //aqui mandar la consulta a los nodos los cuales requiera la consulta
-        //mandale un start a todos los fragmentos
-        ArrayList<BD> fragmentosInvolucrados = obtenerFragmentosRequeridos();
+    public void ejecutarConsulta(String consulta) {
+        ArrayList<BD> fragmentosInvolucrados = obtenerFragmentosRequeridos(consulta);
         Thread[] hilosFragmentos = new Thread[fragmentosInvolucrados.size()];
         for(int i = 0; i < fragmentosInvolucrados.size(); i++) {
             hilosFragmentos[i] = new Thread(fragmentosInvolucrados.get(i));
         }
+        for(Thread fragmentos : hilosFragmentos) {
+            fragmentos.start();
+        }
+        while(fragmentosIsAlive(hilosFragmentos));
+        bandera = true;
+        for(BD fragmento : fragmentosInvolucrados) {
+            System.out.println(fragmento.isTerminado());
+            if(!fragmento.isTerminado()) {
+                bandera = false;
+                break;
+            }
+        }
+        if(bandera) {
+            for(BD fragmento : fragmentosInvolucrados) {
+                try {
+                    System.out.println("Se hizo commit");
+                    fragmento.commit();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("Ocurrio algun error");
+                }
+            }
+        }else {
+            for(BD fragmento : fragmentosInvolucrados) {
+                try {
+                    System.out.println("se hizo rollback");
+                    fragmento.rollback();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("Ocurrio algun error");
+                }
+            }
+        }
     }
-    //identificar en el hashmap que zonas va ir,
-
+    public String[][] resultadoConsulta(){
+        if(!bandera){
+            return null;
+        }
+        ArrayList<ArrayList<String>> consulta = new ArrayList<>();
+        for (BD fragmento: fragmentosInvolucrados) {
+            consulta.addAll(fragmento.getResultadoConsulta());
+        }
+        String[][] datos = new String[consulta.size()][];
+        for (int i = 0; i < datos.length; i++) {
+            datos[i] = consulta.get(i).toArray(new String[0]);
+        }
+        return datos;
+    }
+    public boolean fragmentosIsAlive(Thread[] fragmentos) {
+        for (Thread frag : fragmentos) {
+            if (frag.isAlive()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 

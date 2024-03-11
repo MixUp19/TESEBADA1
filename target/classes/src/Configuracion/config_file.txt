@@ -1,4 +1,4 @@
 NombreFragmento-FRAGMENTO-BASE DE DATOS-TABLA-CRITERIO-ATRIBUTOS-ESTADO
-Ventas-12.12.12.12-neo4j-Clientes-Norte-noCliente,Nombre,Estado,Credito,Deuda-Activo
-VentasC-11.11.11.11-SQL-Clientes-Centro-IdCliente,Nombre,Estado,Credito,Deuda-Activo
-VentasN-11.11.11.11-ObjectDB-Clientes-Sur-idCliente,nombre,estado,credito,deuda-Activo
+Ventas-25.9.55.242-neo4j-Clientes-Norte-IdCliente,Nombre,Estado,Credito,Deuda-Activo
+VentasC-25.7.117.176-SQL-Clientes-Centro-IdCliente,Nombre,Estado,Credito,Deuda-Activo
+VentasN-25.9.12.96-ObjectDB-Clientes-Sur-idCliente,nombre,estado,credito,deuda-Activo

@@ -107,7 +107,7 @@ public class PanMapeoAtr extends JPanel {
             String [] tablaAtributo= mapeo[i].split("-");
             String[] atributo = tablaAtributo[1].split(",");
             for (int j = 0; j < atributo.length; j++) {
-               atributosFragmentos[i][j].setSelectedItem(atributo[j]);
+               atributosFragmentos[i-1][j].setSelectedItem(atributo[j]);
             }
         }
     }
