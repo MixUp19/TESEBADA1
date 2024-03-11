@@ -1,6 +1,5 @@
 package src.Configuracion;
 
-import io.netty.util.internal.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import src.Conexiones.BD;
 import src.Conexiones.Neo4j;
@@ -8,10 +7,10 @@ import src.Conexiones.ObjectDB;
 import src.Conexiones.SqlServer;
 import src.archivos.Archivos;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -19,7 +18,7 @@ public class ManejadorFragmentos {
     private final HashMap<Object, Object> fragmentos;
     private final Object[][] info;
     private boolean continuar, bandera;
-    private final ArrayList<String> destinos;
+    private  ArrayList<String> destinos;
     private ArrayList<BD> fragmentosInvolucrados;
     private String zonas;
 
@@ -29,6 +28,21 @@ public class ManejadorFragmentos {
         Archivos arch = new Archivos();
         info = arch.cargarConfiguracionFragmentos();
         info();
+    }
+    public static int obtenerId(){
+        String url ="jdbc:sqlserver:// 25.7.117.176:1433; databasename=fragmentoSQL;trustServerCertificate=true";
+        String query= "{call darNumero(?)}";
+        int numero=0;
+        try {
+            Connection c = DriverManager.getConnection(url, "sa", "sa");
+            CallableStatement sentencia = c.prepareCall(query);
+            sentencia.registerOutParameter(1, java.sql.Types.INTEGER);
+            sentencia.execute();
+            numero = sentencia.getInt(1);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return numero;
     }
 
     public boolean isContinuar() {
@@ -55,6 +69,23 @@ public class ManejadorFragmentos {
         for (Object[] objects : info) {
             fragmentos.put(objects[4], objects[objects.length - 1]);
         }
+    }
+    public String comprobarInsertManual(String consulta){
+        if(!StringUtils.containsIgnoreCase(consulta, "insert")){
+            continuar= true;
+            return consulta;
+        }
+        if(StringUtils.containsIgnoreCase(consulta, "idCliente")){
+            continuar= false;
+            return "La consulta no debe de incluir el atributo idCliente";
+        }
+        int numero = ManejadorFragmentos.obtenerId();
+        consulta= StringUtils.replaceIgnoreCase(consulta,"(","(idcliente,");
+        consulta= StringUtils.replaceIgnoreCase(consulta,"values(","values ("+numero+",");
+        consulta= StringUtils.replaceIgnoreCase(consulta,"values (","values("+numero+",");
+        System.out.println(consulta);
+        continuar= true;
+        return consulta;
     }
     public String comprobarInsert(String consulta){
         String atributos = StringUtils.substring(consulta,0, StringUtils.indexOfIgnoreCase(consulta,"Values"));
@@ -83,7 +114,7 @@ public class ManejadorFragmentos {
     }
 
     public String verificadorZonaActiva(String consulta) {
-        destinos.clear();
+        destinos = new ArrayList<>();
         if(StringUtils.containsIgnoreCase(consulta, "insert")){
             return comprobarInsert(consulta);
         }
@@ -164,7 +195,6 @@ public class ManejadorFragmentos {
     public boolean contiene(String cadena){
         for (String destino: destinos) {
             if(destino.equalsIgnoreCase(cadena)){
-                System.out.println(destino+", "+ cadena);
                 return true;
             }
         }
@@ -185,6 +215,7 @@ public class ManejadorFragmentos {
                 }
             }
         }
+        System.out.println();
         return fragmentosInvolucrados;
     }
 

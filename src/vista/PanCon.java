@@ -5,6 +5,8 @@ import src.controlador.ControladorTran;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -66,6 +68,9 @@ public class PanCon extends JPanel implements ComponentListener {
             }
         };
         tablaConsulta =new JTable(modelo);
+        TableRowSorter<TableModel> elQueOrdena = new TableRowSorter<>(modelo);
+     
+        tablaConsulta.setRowSorter(elQueOrdena);
         tablaPanel =new JScrollPane(tablaConsulta);
         hazInterfaz();
     }

@@ -25,6 +25,11 @@ public class ControladorTran implements ActionListener {
             return;
         }
         Analizador.realizarAnalisisSintactico();
+        consulta = Manejador.comprobarInsertManual(consulta);
+        if(!Manejador.isContinuar()){
+            JOptionPane.showMessageDialog(null, consulta, "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
         consulta = Manejador.verificadorZonaActiva(consulta);
         if(!Manejador.isContinuar()){
             JOptionPane.showMessageDialog(null, consulta, "Mensaje", JOptionPane.INFORMATION_MESSAGE);
