@@ -92,5 +92,5 @@ public class Menu extends JFrame {
     public JMenuItem getItemMapaAtributo(){
         return itemMapaAtributo;
     }
-    public JMenuItem getItemParticionar(){return  itemParticionar}
+    public JMenuItem getItemParticionar(){return  itemParticionar;}
 }
