@@ -74,6 +74,12 @@ public class PanCon extends JPanel implements ComponentListener {
         tablaPanel =new JScrollPane(tablaConsulta);
         hazInterfaz();
     }
+
+
+
+
+
+
     @Override
     public void componentResized(ComponentEvent e) {
         hazInterfaz();
