@@ -31,6 +31,7 @@ public class ConfiguracionMetodos {
             }
             linea = bufferedReader.readLine();
             while(linea != null) {
+                linea = linea.toLowerCase();
                 fragmentos = linea.split("-");
                 String[] fragmentos2 = fragmentos[1].split(",");
                 mapeo.put(fragmentos[0],fragmentos2[fragmentoIndex-1]);
@@ -42,6 +43,35 @@ public class ConfiguracionMetodos {
         }
         return mapeo;
     }
+    public static ArrayList<String> obtenerTodosLosAtributos(String nombreFragmento) {
+        ArrayList<String> arr = new ArrayList<>();
+        String path = "src/Configuracion/config_file.txt";
+        File archivo;
+        try {
+            archivo = new File(path);
+            FileReader fileReader = new FileReader(archivo);
+            BufferedReader buffReader = new BufferedReader(fileReader);
+            buffReader.readLine();
+            String linea = buffReader.readLine();
+            while(linea != null) {
+                linea = linea.toLowerCase();
+                String[] configuracion = linea.split("-");
+                if(configuracion[0].equalsIgnoreCase(nombreFragmento)) {
+                    String[] atributosArr = configuracion[5].split(",");
+                    for(String atr : atributosArr) {
+                        arr.add(atr);
+                    }
+                    break;
+                }
+                linea = buffReader.readLine();
+            }
+        }catch(IOException e) {
+            e.printStackTrace();
+            System.out.println("Ocurrio un error con el archivo");
+        }
+        return arr;
+    }
+
     public static String getNombreTabla(String nombreFragmento) {
         String nombre = "";
         String path = "src/Configuracion/config_file.txt";
@@ -64,7 +94,7 @@ public class ConfiguracionMetodos {
             e.printStackTrace();
             System.out.println("Ocurrio un error con el archivo");
         }
-        return nombre;
+        return nombre.toLowerCase();
     }
 
     public static void main(String[] args) {
@@ -91,7 +121,7 @@ public class ConfiguracionMetodos {
             String linea = buffReader.readLine();
             String[] arr = linea.split("-");
             for(String atrib : arr[1].split(",")) {
-                atributos.add(atrib);
+                atributos.add(atrib.toLowerCase());
             }
         }catch(IOException e) {
             e.printStackTrace();

@@ -10,7 +10,7 @@ public class Query {
     private ArrayList<Integer> condicionBoolean;
 
     public Query(String consulta) {
-        this.consulta = consulta;
+        this.consulta = consulta.toLowerCase();
         this.nombreTabla = obtenerNombreTabla();
         this.atributosUsados = new ArrayList<>();
         this.atributosCondicion = new ArrayList<>();

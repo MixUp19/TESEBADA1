@@ -14,9 +14,7 @@ public class AnalizadorSintactico {
     public AnalizadorSintactico(Vector<String> tokens) {
         this.tokens = tokens;
         this.indiceActual = 0;
-        for (String token : tokens) {
-            todosLosTokensString += token + " ";
-        }
+
     }
 
     public void analizar() {
@@ -43,7 +41,7 @@ public class AnalizadorSintactico {
 
     private boolean evaluarTxt(String expresionRegular, String texto) {
         if (texto == null) {
-            return false; // o realiza alguna acción de manejo de error
+            return false;
         }
         Pattern pattern = Pattern.compile(expresionRegular, Pattern.UNICODE_CASE); 
         Matcher matcher = pattern.matcher(texto);
