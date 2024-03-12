@@ -19,15 +19,28 @@ public class PanMapeoAtr extends JPanel {
         creado= false;
         c = new ControladorMapeoAtr(this);
         addComponentListener(c);
-        btnGuardar= new JButton("Guardar");
-        btnGuardar.setFont(fuente);
+        btnGuardar= disenoBoton("Guardar");
         btnGuardar.addActionListener(c);
         panelConfiguracion = new JPanel();
         panelConfiguracion.setBackground(new Color(241, 255, 198));
         setBackground(new Color(241, 255, 198));
         setLayout(new BorderLayout());
-        nombreTabla= new JLabel("Nombre de la tabla: ");
-        nombreTabla.setFont(fuente);
+        nombreTabla=disenoLabel("Nombre de la tabla: ");
+
+    }
+    private JButton disenoBoton(String texto) {
+        JButton button = new JButton(texto);
+        button.setFont(fuente);
+        button.setBackground(new Color(123, 200, 164));
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        return button;
+    }
+    private JLabel disenoLabel(String texto) {
+        JLabel label = new JLabel();
+        label.setFont(fuente);
+        label.setText(texto);
+        return label;
     }
     public void hazInterfaz(String[][] atributosFrag, String [] atributosTabla,String[] nombreFrag, String nombreTabla){
         nomTabla= nombreTabla;
@@ -35,33 +48,31 @@ public class PanMapeoAtr extends JPanel {
         add(btnGuardar,BorderLayout.SOUTH);
         panelConfiguracion.setLayout(new GridLayout(atributosTabla.length+1, nombreFrag.length+1));
         this.nombreTabla.setText("Nombre de la tabla: "+nombreTabla);
-        this.nombreTabla.setFont(fuente);
         add(this.nombreTabla, BorderLayout.NORTH);
 
         atributosDistribuida = new JLabel[atributosTabla.length];
         for (int i = 0; i < atributosTabla.length; i++) {
-            atributosDistribuida[i]= new JLabel(atributosTabla[i]+":");
-            atributosDistribuida[i].setFont(fuente);
+            atributosDistribuida[i]= disenoLabel(atributosTabla[i]+":");
+
         }//c
 
         this.nombreFrag= new JLabel[nombreFrag.length];
         for (int i = 0; i < this.nombreFrag.length; i++) {
-            this.nombreFrag[i]= new JLabel(nombreFrag[i]);
-            this.nombreFrag[i].setFont(fuente);
+            this.nombreFrag[i]= disenoLabel(nombreFrag[i]);
 
         }//C
 
         atributosFragmentos = new JComboBox[atributosTabla.length][nombreFrag.length];
         for (int i = 0; i < atributosFragmentos.length; i++) {
             for (int j = 0; j < nombreFrag.length; j++) {
-                atributosFragmentos[i][j]= new JComboBox<>(atributosFrag[j]);
+                atributosFragmentos[i][j]= disenoComboBox(atributosFrag[j]);
             }
         }//C
 
         for (int i = 0; i < atributosTabla.length+1 ; i++) {
             for (int j = 0; j < nombreFrag.length+1; j++) {
                 if(i==0&&j==0){
-                    panelConfiguracion.add(new JLabel("Atributos distribuida"));
+                    panelConfiguracion.add(disenoLabel("Atributos distribuida"));
                     continue;
                 }
                 if(i==0) {
@@ -77,7 +88,13 @@ public class PanMapeoAtr extends JPanel {
         }
         add(panelConfiguracion,BorderLayout.CENTER);
     }
-
+    private JComboBox<String> disenoComboBox(String[] items) {
+        JComboBox<String> comboBox = new JComboBox<>(items);
+        comboBox.setFont(fuente);
+        comboBox.setBackground(new Color(201, 250, 226));
+        comboBox.setForeground(Color.BLACK);
+        return comboBox;
+    }
     public String[] getMapeo(){
         String [] mapeo= new String[atributosFragmentos.length];
         StringBuilder linea;
@@ -107,7 +124,7 @@ public class PanMapeoAtr extends JPanel {
             String [] tablaAtributo= mapeo[i].split("-");
             String[] atributo = tablaAtributo[1].split(",");
             for (int j = 0; j < atributo.length; j++) {
-               atributosFragmentos[i-1][j].setSelectedItem(atributo[j]);
+                atributosFragmentos[i-1][j].setSelectedItem(atributo[j]);
             }
         }
     }

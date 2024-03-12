@@ -5,11 +5,7 @@ import src.controlador.ControladorConfig;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.io.*;
+import javax.swing.table.*;
 
 public class PanConfig extends JPanel{
     private JTable tableConfig;
@@ -24,21 +20,50 @@ public class PanConfig extends JPanel{
     };
     private ControladorConfig c;
     private boolean creada;
+    private Font fuente;
 
     public PanConfig(){
+        fuente = new Font("Verdana", Font.PLAIN, 12);
         this.setBackground(new Color(201,250,246));
+
         c = new ControladorConfig(this);
         addComponentListener(c);
         modelo = new DefaultTableModel(data, columnNames);
-        guardarConfiguracionBtn = new JButton("Guardar");
-        btnAnadirFila = new JButton("+");
+        guardarConfiguracionBtn = disenoBoton("Guardar");
+        btnAnadirFila = disenoBoton("+");
+        tableConfig = new JTable(modelo);
+        disenoTabla();
         setLayout(null);
         setBackground(new Color(241, 255, 198));
-        tableConfig = new JTable(modelo);
+
         hazInterfaz();
         creada= false;
         guardarConfiguracionBtn.addActionListener(c);
         btnAnadirFila.addActionListener(c);
+    }
+    private JButton disenoBoton(String texto) {
+        JButton button = new JButton(texto);
+        button.setFont(fuente);
+        button.setBackground(new Color(123, 200, 164));
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        return button;
+    }
+    private void disenoTabla() {
+        tableConfig.setFont(fuente);
+        tableConfig.setRowHeight((int) (fuente.getSize() * 1.5));
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        for (int i = 0; i < tableConfig.getColumnCount(); i++) {
+            tableConfig.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+        JTableHeader encabezado = tableConfig.getTableHeader();
+        encabezado.setFont(fuente.deriveFont(Font.BOLD));
+        encabezado.setBackground(new Color(123, 200, 164));
+        encabezado.setForeground(Color.WHITE);
+        encabezado.setBorder(BorderFactory.createLineBorder(Color.BLACK));
     }
 
     public void hazInterfaz() {
@@ -86,31 +111,31 @@ public class PanConfig extends JPanel{
     public JButton getBtnAnadirFila() {
         return btnAnadirFila;
     }
-     public String[] obtenerConfiguracion(){
+    public String[] obtenerConfiguracion(){
         String[] datos = new String[tableConfig.getRowCount()];
-         if (tableConfig.getCellEditor() != null) {
-             tableConfig.getCellEditor().stopCellEditing();
-         }
-         int blancos;
-         StringBuilder renglon;
-         for(int i = 0; i < tableConfig.getRowCount(); i++) {
-             renglon = new StringBuilder();
-             blancos=0;
-             for (int j = 0; j < tableConfig.getColumnCount(); j++) {
-                 String linea= tableConfig.getModel().getValueAt(i, j).toString();
-                 if(linea.isEmpty()){
-                     blancos++;
-                 }
-                 renglon.append(linea).append("-");
-             }
+        if (tableConfig.getCellEditor() != null) {
+            tableConfig.getCellEditor().stopCellEditing();
+        }
+        int blancos;
+        StringBuilder renglon;
+        for(int i = 0; i < tableConfig.getRowCount(); i++) {
+            renglon = new StringBuilder();
+            blancos=0;
+            for (int j = 0; j < tableConfig.getColumnCount(); j++) {
+                String linea= tableConfig.getModel().getValueAt(i, j).toString();
+                if(linea.isEmpty()){
+                    blancos++;
+                }
+                renglon.append(linea).append("-");
+            }
 
-             if(blancos== tableConfig.getColumnCount()) {
-                 continue;
-             }
-             datos[i] = renglon.substring(0,renglon.length()-1)+"\n";
-         }
-         return datos;
-     }
+            if(blancos== tableConfig.getColumnCount()) {
+                continue;
+            }
+            datos[i] = renglon.substring(0,renglon.length()-1)+"\n";
+        }
+        return datos;
+    }
 
     public boolean isCreada() {
         return creada;

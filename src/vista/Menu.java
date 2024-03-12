@@ -25,13 +25,12 @@ public class Menu extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         ImageIcon img = new ImageIcon("src/ingres.png");
         Image image = img.getImage();
-        Image newimg = image.getScaledInstance(500 ,400,  java.awt.Image.SCALE_SMOOTH);
+        Image newimg = image.getScaledInstance(800 ,400,  java.awt.Image.SCALE_SMOOTH);
         img = new ImageIcon(newimg);
 
         this.setIconImage(img.getImage());
         add(new JLabel(img), BorderLayout.CENTER);
         crearMenu();
-        setBackground(new Color(241, 255, 198));
         System.out.println();
         setVisible(true);
     }

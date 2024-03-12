@@ -19,16 +19,34 @@ public class PanTran extends JPanel implements ComponentListener {
         setLayout(null);
         setBackground(new Color(241, 255, 198));
         c= new ControladorTran(this);
-        lbltransaccion = new JLabel("Transacción:");
-        lbltransaccion.setFont(fuente);
-        txtTransaccion = new JTextField();
-        txtTransaccion.setFont(fuente);
-        btnTransaccion = new JButton("Ejecutar.");
-        btnTransaccion.setFont(fuente);
-        lblMsg = new JLabel("Esto es un mensaje de prueba");
+        lbltransaccion = disenoLabel("Transacción:");
+        txtTransaccion = disenoTextField();
+        btnTransaccion = disenoBoton("Ejecutar");
+        lblMsg = disenoLabel("Esto es un mensaje de prueba");
         addComponentListener(this);
         hazInterfaz();
         hazEscuchas();
+    }
+    private JButton disenoBoton(String texto) {
+        JButton button = new JButton(texto);
+        button.setFont(fuente);
+        button.setBackground(new Color(123, 200, 164));
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        return button;
+    }
+    private JLabel disenoLabel(String texto) {
+        JLabel label = new JLabel();
+        label.setFont(fuente);
+        label.setText(texto);
+        return label;
+    }
+    private JTextField disenoTextField() {
+        JTextField textField = new JTextField();
+        textField.setFont(fuente);
+        textField.setBackground(Color.WHITE);
+        textField.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        return textField;
     }
     private void hazEscuchas(){
         txtTransaccion.addActionListener(c);

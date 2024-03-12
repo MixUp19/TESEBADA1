@@ -25,19 +25,30 @@ public class PanCon extends JPanel implements ComponentListener {
         fuente = new Font("Verdana", Font.PLAIN, 16);
         setBackground(new Color(241, 255, 198));
         setLayout(null);
-        this.setBackground(new Color(201,250,246));
         addComponentListener(this);
         c = new ControladorCon(this);
         tablaPanel= new JScrollPane();
-        lblConsulta = new JLabel("Consultar: ");
-        lblConsulta.setFont(fuente);
+        lblConsulta = disenoLabel("Consultar:");
         txtConsulta = new JTextField();
-        txtConsulta.setFont(fuente);
-        btnConsulta = new JButton("Consultar");
+        btnConsulta = disenoBoton("Consultar");
         lblMsg= new JLabel();
         lblMsg.setFont(fuente);
         hazInterfaz();
         hazEscuchas();
+    }
+    private JLabel disenoLabel(String texto) {
+        JLabel label = new JLabel();
+        label.setFont(fuente);
+        label.setText(texto);
+        return label;
+    }
+    private JButton disenoBoton(String texto) {
+        JButton button = new JButton(texto);
+        button.setFont(fuente);
+        button.setBackground(new Color(123, 200, 164));
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        return button;
     }
     private void hazEscuchas(){
         txtConsulta.addActionListener(c);
@@ -69,7 +80,7 @@ public class PanCon extends JPanel implements ComponentListener {
         };
         tablaConsulta =new JTable(modelo);
         TableRowSorter<TableModel> elQueOrdena = new TableRowSorter<>(modelo);
-     
+
         tablaConsulta.setRowSorter(elQueOrdena);
         tablaPanel =new JScrollPane(tablaConsulta);
         hazInterfaz();

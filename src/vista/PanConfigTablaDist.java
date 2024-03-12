@@ -21,21 +21,39 @@ public class PanConfigTablaDist extends JPanel {
         fuente = new Font("Verdana", Font.PLAIN, 16);
         c= new ControladorConfigTablaDist(this);
         addComponentListener(c);
-        labelAtributos = new JLabel("Lista de Atributos:");
-        labelAtributos.setFont(fuente);
-        labelNombreTabla = new JLabel("Nombre de la tabla:");
-        labelNombreTabla.setFont(fuente);
-        nombreTablaTxt = new JTextField();
-        nombreTablaTxt.setFont(fuente);
-        atributosTxt = new JTextField();
-        atributosTxt.setFont(fuente);
-        btnGuardar = new JButton("Guardar");
-        btnGuardar.setFont(fuente);
+        labelAtributos = disenoLabel("Lista de Atributos:");
+        labelNombreTabla = disenoLabel("Nombre de la tabla:");
+        nombreTablaTxt = disenoTextField();
+        atributosTxt = disenoTextField();
+        btnGuardar = disenoBoton("Guardar");
         setLayout(null);
         setBackground(new Color(241, 255, 198));
         hazInterfaz();
         this.btnGuardar.addActionListener(c);
     }
+
+    private JLabel disenoLabel(String texto) {
+        JLabel label = new JLabel();
+        label.setFont(fuente);
+        label.setText(texto);
+        return label;
+    }
+    private JButton disenoBoton(String texto) {
+        JButton button = new JButton(texto);
+        button.setFont(fuente);
+        button.setBackground(new Color(123, 200, 164));
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        return button;
+    }
+    private JTextField disenoTextField() {
+        JTextField textField = new JTextField();
+        textField.setFont(fuente);
+        textField.setBackground(Color.WHITE);
+        textField.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        return textField;
+    }
+
 
     public void hazInterfaz() {
         int w = getWidth();
