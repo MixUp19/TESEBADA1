@@ -81,8 +81,8 @@ public class ManejadorFragmentos {
         }
         int numero = ManejadorFragmentos.obtenerId();
         consulta= StringUtils.replaceIgnoreCase(consulta,"(","(idcliente,");
-        consulta= StringUtils.replaceIgnoreCase(consulta,"values(","values ("+numero+",");
-        consulta= StringUtils.replaceIgnoreCase(consulta,"values (","values("+numero+",");
+        consulta= StringUtils.replaceIgnoreCase(consulta,"values(idCliente","values ("+numero);
+        consulta= StringUtils.replaceIgnoreCase(consulta,"values (idCliente","values("+numero);
         System.out.println(consulta);
         continuar= true;
         return consulta;
