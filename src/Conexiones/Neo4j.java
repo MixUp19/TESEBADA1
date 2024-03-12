@@ -139,8 +139,14 @@ public class Neo4j extends BD implements AutoCloseable, Runnable{
         }
         ArrayList<String> atributos = q.getAtributosUsados();
         ArrayList<String> expresiones = q.getExpresiones();
-        cipherCodigo += "SET n." + mapeo.get(atributos.get(0)) + " = " + expresiones.get(0);
-
+        cipherCodigo += "SET n." + mapeo.get(atributos.get(0)) + " = ";
+        for(String str : expresiones) {
+            if(mapeo.containsKey(str)) {
+                cipherCodigo += "n." + mapeo.get(str) + " ";
+                continue;
+            }
+            cipherCodigo += str + " ";
+        }
         return cipherCodigo;
     }
 
@@ -213,7 +219,7 @@ public class Neo4j extends BD implements AutoCloseable, Runnable{
         for(int i = 0; i < records.size(); i++) {
             ArrayList<String> aux = new ArrayList<>();
             for(int j = 0; j < records.get(0).size(); j++) {
-                aux.add(records.get(i).get(j).toString());
+                aux.add(records.get(i).get(j).toString().replace("\"",""));
             }
             resultado.add(aux);
         }

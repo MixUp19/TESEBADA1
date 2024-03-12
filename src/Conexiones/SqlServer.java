@@ -85,9 +85,9 @@ public class SqlServer extends BD implements Runnable{
         String[] condicion = q.getCondicion().split(" ");
         for(int i = 0; i < condicion.length; i++) {
             if(mapeo.containsKey(condicion[i])) {
-                sqlCodigo += mapeo.get(condicion[i]);
+                sqlCodigo += mapeo.get(condicion[i]) + " ";
             }else {
-                sqlCodigo += condicion[i];
+                sqlCodigo += condicion[i] + " ";
             }
         }
         return sqlCodigo;
@@ -131,9 +131,9 @@ public class SqlServer extends BD implements Runnable{
         String[] condicion = q.getCondicion().split(" ");
         for(String cond : condicion) {
             if(mapeo.containsKey(cond)) {
-                sqlCodigo += mapeo.get(cond);
+                sqlCodigo += mapeo.get(cond) + " ";
             }else {
-                sqlCodigo += cond;
+                sqlCodigo += cond + " ";
             }
         }
         return sqlCodigo;
@@ -143,7 +143,14 @@ public class SqlServer extends BD implements Runnable{
         Query q = new Query(query);
         String nombreTabla = ConfiguracionMetodos.getNombreTabla(nombreFragmento);
         String sqlCodigo = "UPDATE " + nombreTabla + " SET ";
-        sqlCodigo += q.getAtributosUsados().get(0) + " = " + q.getExpresiones().get(0) + " ";
+        sqlCodigo += q.getAtributosUsados().get(0) + " = ";
+        for(String expr : q.getExpresiones()) {
+            if(mapeo.containsKey(expr)) {
+                sqlCodigo += mapeo.get(expr) + " ";
+                continue;
+            }
+            sqlCodigo += expr + " ";
+        }
         String[] condicion = q.getCondicion().split(" ");
         for(String str : condicion) {
             if(mapeo.containsKey(str)) {
@@ -184,6 +191,7 @@ public class SqlServer extends BD implements Runnable{
         crearConexion();
         conexion.setAutoCommit(false);
         PreparedStatement statement = conexion.prepareStatement(sqlCodigo);
+        System.out.println("XXX: " + sqlCodigo);
         if(isSelect){
             resultSet = statement.executeQuery();
             obtenerResultado();
@@ -216,6 +224,7 @@ public class SqlServer extends BD implements Runnable{
             this.terminado = true;
         } catch (Exception e) {
             this.terminado = false;
+            //System.out.println("XXX: " + sentenciaAEjecutar);
             e.printStackTrace();
             System.out.println("Ocurrio un error en el fragmento: " + nombreFragmento);
         }

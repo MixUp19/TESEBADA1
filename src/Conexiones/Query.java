@@ -83,8 +83,16 @@ public class Query {
                 expresiones.add(exp);
             }
         }else {
+            //update clientes set deuda = deuda * 1.1
             String[] consultaArr = consulta.split(" ");
-            expresiones.add(consultaArr[5]);
+            for(int i = 5; i < consultaArr.length; i++) {
+                if(consultaArr[i].equalsIgnoreCase("where")) {
+                    break;
+                }
+                expresiones.add(consultaArr[i]);
+                //agregalo a las expresiones
+            }
+
         }
     }
 
